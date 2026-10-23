@@ -26,6 +26,18 @@ DYNAMIC_FEATURES = [
     "dry_spell_days",       # days since the last significant rain
 ]
 
+# Local history, available wherever floods and drain problems are reported (311 in New York,
+# FR-21 user feedback in the application). Missing columns are read as "no history" (0).
+HISTORY_FEATURES = [
+    "flood_reports_250m",   # past flood reports within 250 m of the segment
+    "flood_reports_365d",   # past flood reports on the segment in the last 365 days
+    "basin_reports_prior",  # past "drain blocked" reports on the segment
+]
+
+# Position of the segment within its mapped area (percentiles, 0..1). They make terrain comparable
+# between areas with different relief; missing columns are read as the area median (0.5).
+RELATIVE_FEATURES = ["elevation_rel_pct", "dist_wadi_pct", "twi_pct", "impervious_pct"]
+
 RAW_FEATURES = STATIC_FEATURES + DYNAMIC_FEATURES
 
 # Metadata used for confidence and splitting, never as model input.
@@ -36,7 +48,7 @@ LABEL = "flooded"
 LEVELS = ["Low", "Moderate", "High", "Very high"]
 
 # Features that carry the drainage-vulnerability hypothesis (FR-08); dropped in the ablation.
-DRAINAGE_FEATURES = ["drain_inlet_density", "dry_spell_days", "black_spot_count", "osm_completeness"]
+DRAINAGE_FEATURES = ["drain_inlet_density", "dry_spell_days", "osm_completeness", "basin_reports_prior"]
 
 # Reference rainfall (mm/h) a working drainage network is assumed to absorb; FR-09 lowers it.
 RAIN_REF_MMH = 30.0
@@ -45,3 +57,6 @@ RAIN_REF_MMH = 30.0
 TARGET_RECALL_HIGH = 0.70
 TARGET_RECALL_MODERATE = 0.90
 TARGET_RECALL_VERY_HIGH = 0.35
+
+# Alternative level placement (FR-24): share of segment-storms put at each level or above.
+ALERT_SHARE = {"Moderate": 0.10, "High": 0.02, "Very high": 0.005}

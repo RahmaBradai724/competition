@@ -1,0 +1,8 @@
+Dataset: 3B-HHR.MS.MRG.3IMERG.20180919-S210000-E212959.1260.V07B.HDF5
+precipitation[0][0], 2.22, 1.96, 2.72, 0.28, 0, 0
+precipitation[0][1], 0.51, 0.62, 1.79, 1.46, 0, 0
+precipitation[0][2], 1.37, 0.83, 2.69, 0.74, 0, 0
+precipitation[0][3], 0.04, 0.32, 0.9, 1.06, 0, 0
+precipitation[0][4], 0.01, 0.16, 0.32, 0.27, 0.3, 0.04
+precipitation[0][5], 0, 0, 0, 0.09, 0.25, 0.03
+precipitation[0][6], 0, 0, 0, 0, 0, 0

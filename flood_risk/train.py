@@ -6,6 +6,7 @@ Writes models/v2_hgb.joblib, models/v2_logistic.joblib, reports/v2_report.md and
 """
 
 import argparse
+import json
 from pathlib import Path
 
 import joblib
@@ -19,15 +20,16 @@ from sklearn.model_selection import GroupKFold
 
 from . import v2
 from .features import drainage_vulnerability, engineer
-from .schema import LABEL, LEVELS, RAW_FEATURES
+from .schema import HISTORY_FEATURES, LABEL, LEVELS, RAW_FEATURES, RELATIVE_FEATURES
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
 LEADS_MIN = [0, 10, 20, 30]
 MAIN_LEAD = 20
-NAMES = {"v1": "V1 multi-criteria", "logistic": "V2 logistic", "hgb": "V2 gradient boosting",
-         "hgb_no_drainage": "V2 GB without drainage proxies"}
+NAMES = {"v1": "V1 multi-criteria", "v1_relative": "Relative susceptibility", "logistic": "V2 logistic",
+         "hgb": "V2 gradient boosting", "hgb_no_drainage": "V2 GB without drainage proxies",
+         "hgb_terrain": "V2 GB terrain only"}
 
 
 def with_forecast_error(df: pd.DataFrame, lead_min, rng) -> pd.DataFrame:
@@ -54,12 +56,21 @@ def metrics(p, levels, y) -> dict:
     return {
         "recall_high": tp / max(int(y.sum()), 1),
         "false_alarm": 1 - tp / max(int(alert.sum()), 1),
+        "precision_high": tp / max(int(alert.sum()), 1),
+        "accuracy_high": float((alert == (y == 1)).mean()),
         "alerts_per_1000": 1000 * alert.mean(),
         "roc_auc": roc_auc_score(y, p),
         "pr_auc": average_precision_score(y, p),
         "brier": brier_score_loss(y, p),
         "ece": ece(p, y),
+        **{f"recall_top{int(100 * share)}": budget_recall(p, y, share) for share in (0.01, 0.02, 0.05)},
     }
+
+
+def budget_recall(p, y, share) -> float:
+    """Share of floods covered when alerting exactly on the `share` riskiest rows (ties broken by order)."""
+    top = np.argsort(-np.asarray(p), kind="stable")[: max(int(len(p) * share), 1)]
+    return float(y[top].sum() / max(int(y.sum()), 1))
 
 
 def ece(p, y, bins=10):
@@ -70,29 +81,36 @@ def ece(p, y, bins=10):
                      for b in range(len(edges) - 1) if (idx == b).any()))
 
 
-def cross_validate(df: pd.DataFrame, n_folds: int, seed: int):
+def cross_validate(df: pd.DataFrame, n_folds: int, seed: int, neg_sample: float = 1.0,
+                   params: dict | None = None, levels: str = "recall", kinds=None):
+    kinds = kinds or v2.KINDS
     rng = np.random.default_rng(seed)
-    rows, oof = [], {k: np.zeros(len(df)) for k in v2.KINDS}
+    rows, oof = [], {k: np.zeros(len(df)) for k in kinds}
     folds = GroupKFold(n_splits=n_folds).split(df, df[LABEL], df["event_id"])
     for fold, (tr, te) in enumerate(folds):
         # Training rows see forecasts with a random lead, like the operational inputs.
         train = with_forecast_error(df.iloc[tr], rng.uniform(0, 30, len(tr)), rng)
-        tests = {lead: with_forecast_error(df.iloc[te], lead, rng) for lead in LEADS_MIN}
-        for kind in v2.KINDS:
-            b = v2.fit(kind, train, seed)
-            for lead, test in tests.items():
+        test_events = ",".join(sorted(map(str, df.iloc[te]["event_id"].unique())))
+        for kind in kinds:
+            b = v2.fit(kind, train, seed, neg_sample=neg_sample, params=params, levels=levels)
+            for lead in LEADS_MIN:
+                # Built one at a time to save memory; the seed gives every model the same forecasts.
+                test = with_forecast_error(df.iloc[te], lead, np.random.default_rng([seed, fold, lead]))
                 p = b.predict_proba(test)
-                lv = v2.to_level(p, b.thresholds)
+                area = test["aoi"].to_numpy() if "aoi" in test else None
+                lv = v2.levels_by_share(p, area) if levels == "area" else v2.to_level(p, b.thresholds)
                 for target in ["flooded", "flooded_true"]:
                     if target in test:
-                        rows.append({"fold": fold, "model": kind, "lead": lead, "target": target,
+                        rows.append({"fold": fold, "events": test_events, "model": kind, "lead": lead, "target": target,
                                      **metrics(p, lv, test[target].to_numpy())})
                 # Event level: was the segment flooded at some point of the storm?
                 ev = pd.DataFrame({"p": p, "y": test[LABEL].to_numpy(), "seg": test["segment_id"].to_numpy(),
-                                   "ev": test["event_id"].to_numpy()}).groupby(["seg", "ev"]).max()
-                rows.append({"fold": fold, "model": kind, "lead": lead, "target": "event_level",
-                             **metrics(ev["p"].to_numpy(), v2.to_level(ev["p"].to_numpy(), b.thresholds),
-                                       ev["y"].to_numpy())})
+                                   "ev": test["event_id"].to_numpy(),
+                                   "area": area if area is not None else 0}).groupby(["seg", "ev"]).max()
+                ev_lv = (v2.levels_by_share(ev["p"].to_numpy(), ev["area"].to_numpy()) if levels == "area"
+                         else v2.to_level(ev["p"].to_numpy(), b.thresholds))
+                rows.append({"fold": fold, "events": test_events, "model": kind, "lead": lead, "target": "event_level",
+                             **metrics(ev["p"].to_numpy(), ev_lv, ev["y"].to_numpy())})
                 if lead == MAIN_LEAD:
                     oof[kind][te] = p
         print(f"fold {fold + 1}/{n_folds} done ({df.iloc[te]['event_id'].nunique()} test events)")
@@ -129,7 +147,7 @@ def drainage_effect(df: pd.DataFrame) -> dict:
 def figures(df, oof, res, final, out: Path):
     y = df[LABEL].to_numpy()
     fig, ax = plt.subplots(figsize=(5.5, 5))
-    for kind in ["v1", "logistic", "hgb"]:
+    for kind in [k for k in ["v1", "v1_relative", "logistic", "hgb"] if k in oof]:
         p = oof[kind]
         edges = np.unique(np.quantile(p, np.linspace(0, 1, 13)))
         idx = np.clip(np.searchsorted(edges, p, side="right") - 1, 0, len(edges) - 2)
@@ -145,7 +163,7 @@ def figures(df, oof, res, final, out: Path):
 
     fig, axes = plt.subplots(1, 2, figsize=(10, 4))
     d = res[res.target == "flooded"].groupby(["model", "lead"])[["recall_high", "pr_auc"]].mean()
-    for kind in v2.KINDS:
+    for kind in [k for k in NAMES if k in set(res.model)]:
         axes[0].plot(LEADS_MIN, d.loc[kind, "recall_high"], marker="o", label=NAMES[kind])
         axes[1].plot(LEADS_MIN, d.loc[kind, "pr_auc"], marker="o", label=NAMES[kind])
     axes[0].axhline(0.70, color="grey", ls=":", lw=1)
@@ -167,12 +185,12 @@ def figures(df, oof, res, final, out: Path):
 
 
 def fmt_table(res: pd.DataFrame, target: str, lead: int) -> str:
-    cols = ["recall_high", "false_alarm", "alerts_per_1000", "roc_auc", "pr_auc", "brier", "ece"]
+    cols = ["recall_high", "false_alarm", "alerts_per_1000", "roc_auc", "pr_auc", "recall_top2", "brier", "ece"]
     sub = res[(res.target == target) & (res.lead == lead)]
     mean, std = sub.groupby("model")[cols].mean(), sub.groupby("model")[cols].std()
-    lines = ["| Model | Recall High+ | False-alarm rate | Alerts /1000 | ROC-AUC | PR-AUC | Brier | ECE |",
-             "|---|---|---|---|---|---|---|---|"]
-    for kind in v2.KINDS:
+    lines = ["| Model | Recall High+ | False-alarm rate | Alerts /1000 | ROC-AUC | PR-AUC | Recall top 2 % | Brier | ECE |",
+             "|---|---|---|---|---|---|---|---|---|"]
+    for kind in [k for k in NAMES if k in set(sub.model)]:
         cells = [f"{mean.loc[kind, c]:.3f} ± {std.loc[kind, c]:.3f}" if c not in ("brier", "ece")
                  else f"{mean.loc[kind, c]:.4f}" for c in cols]
         cells[2] = f"{mean.loc[kind, 'alerts_per_1000']:.1f}"
@@ -185,6 +203,13 @@ def main():
     ap.add_argument("--data", default="data/inventory_synthetic.csv")
     ap.add_argument("--folds", type=int, default=4)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--neg-sample", type=float, default=1.0,
+                    help="share of non-flooded rows kept for training (evaluation always uses all rows)")
+    ap.add_argument("--levels", choices=["recall", "budget", "area"], default="recall",
+                    help="place levels by target recall (section 8), by alert budget (schema.ALERT_SHARE), "
+                         "or by the same budget inside each mapped area")
+    ap.add_argument("--kinds", nargs="+", default=v2.KINDS, choices=list(NAMES))
+    ap.add_argument("--hgb-params", help="JSON file of gradient-boosting parameters (from flood_risk.tune)")
     ap.add_argument("--out", default="reports")
     ap.add_argument("--models", default="models")
     ap.add_argument("--segments", default="data/segments_synthetic.csv",
@@ -195,16 +220,23 @@ def main():
     missing = set(RAW_FEATURES + [LABEL, "event_id", "rain_interpolated"]) - set(df.columns)
     if missing:
         raise SystemExit(f"inventory is missing columns: {sorted(missing)}")
+    # Real inventories reach millions of rows: keep only what the models use, in float32.
+    df = df[[c for c in RAW_FEATURES + HISTORY_FEATURES + RELATIVE_FEATURES +
+             [LABEL, "flooded_true", "event_id", "segment_id", "aoi", "rain_interpolated"] if c in df.columns]].copy()
+    floats = df.select_dtypes("float64").columns
+    df[floats] = df[floats].astype("float32")
     synthetic = "flooded_true" in df.columns
     out, models = Path(args.out), Path(args.models)
     out.mkdir(parents=True, exist_ok=True); models.mkdir(parents=True, exist_ok=True)
 
-    res, oof = cross_validate(df, args.folds, args.seed)
+    params = json.loads(Path(args.hgb_params).read_text()) if args.hgb_params else None
+    res, oof = cross_validate(df, args.folds, args.seed, args.neg_sample, params, args.levels, args.kinds)
     res.to_csv(out / "cv_metrics.csv", index=False)
 
     rng = np.random.default_rng(args.seed + 1)
     train_all = with_forecast_error(df, rng.uniform(0, 30, len(df)), rng)
-    finals = {k: v2.fit(k, train_all, args.seed) for k in ["hgb", "logistic"]}
+    finals = {k: v2.fit(k, train_all, args.seed, neg_sample=args.neg_sample, params=params, levels=args.levels)
+              for k in ["hgb", "logistic"]}
     for k, b in finals.items():
         joblib.dump(b, models / f"v2_{k}.joblib")
     importance = figures(df, oof, res, finals["hgb"], out)

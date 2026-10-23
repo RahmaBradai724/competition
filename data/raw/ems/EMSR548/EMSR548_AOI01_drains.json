@@ -1,0 +1,144 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-10-23T13:53:11Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 309299881,
+  "lat": 37.5423042,
+  "lon": 15.0786934,
+  "tags": {
+    "check_date": "2025-05-16",
+    "man_made": "manhole",
+    "manhole": "drain"
+  }
+},
+{
+  "type": "node",
+  "id": 749062565,
+  "lat": 37.5669006,
+  "lon": 15.1544950,
+  "tags": {
+    "man_made": "manhole",
+    "manhole": "drain"
+  }
+},
+{
+  "type": "node",
+  "id": 2822464483,
+  "lat": 37.5433002,
+  "lon": 15.1025825,
+  "tags": {
+    "man_made": "manhole",
+    "manhole": "drain"
+  }
+},
+{
+  "type": "node",
+  "id": 2822464485,
+  "lat": 37.5433165,
+  "lon": 15.1028859,
+  "tags": {
+    "man_made": "manhole",
+    "manhole": "drain"
+  }
+},
+{
+  "type": "node",
+  "id": 4137555797,
+  "lat": 37.5380189,
+  "lon": 15.1104639,
+  "tags": {
+    "man_made": "manhole",
+    "manhole": "drain"
+  }
+},
+{
+  "type": "node",
+  "id": 4242299483,
+  "lat": 37.5670805,
+  "lon": 15.0780078,
+  "tags": {
+    "man_made": "manhole",
+    "manhole": "drain"
+  }
+},
+{
+  "type": "node",
+  "id": 12817292861,
+  "lat": 37.4777021,
+  "lon": 15.0140163,
+  "tags": {
+    "man_made": "manhole",
+    "manhole": "drain"
+  }
+},
+{
+  "type": "node",
+  "id": 13736044209,
+  "lat": 37.5433194,
+  "lon": 15.1022727,
+  "tags": {
+    "man_made": "manhole",
+    "manhole": "drain"
+  }
+},
+{
+  "type": "node",
+  "id": 13923836079,
+  "lat": 37.5701826,
+  "lon": 15.0769988,
+  "tags": {
+    "check_date": "2026-06-09",
+    "man_made": "manhole",
+    "manhole": "drain"
+  }
+},
+{
+  "type": "node",
+  "id": 13926237168,
+  "lat": 37.6168924,
+  "lon": 15.1591617,
+  "tags": {
+    "man_made": "manhole",
+    "manhole": "drain"
+  }
+},
+{
+  "type": "node",
+  "id": 13926237169,
+  "lat": 37.6172356,
+  "lon": 15.1595131,
+  "tags": {
+    "man_made": "manhole",
+    "manhole": "drain"
+  }
+},
+{
+  "type": "node",
+  "id": 14111415271,
+  "lat": 37.5856292,
+  "lon": 15.0984976,
+  "tags": {
+    "man_made": "manhole",
+    "manhole": "drain"
+  }
+},
+{
+  "type": "node",
+  "id": 14148940976,
+  "lat": 37.5673258,
+  "lon": 15.0720541,
+  "tags": {
+    "man_made": "manhole",
+    "manhole": "drain"
+  }
+}
+
+  ]
+}

@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 
 from .features import FACTOR_GROUPS, drainage_vulnerability
-from .schema import RAW_FEATURES
+from .schema import HISTORY_FEATURES, RAW_FEATURES
 
 
 def confidence(df: pd.DataFrame) -> pd.DataFrame:
@@ -49,7 +49,8 @@ def explain(bundle, df: pd.DataFrame, reference: pd.Series, top: int = 3) -> lis
     for name, cols in FACTOR_GROUPS.items():
         neutral = df.copy()
         for col in cols:
-            neutral[col] = reference[col]
+            if col in neutral.columns:
+                neutral[col] = reference.get(col, 0.0)
         drops[name] = base - bundle.predict_proba(neutral)
     drops = pd.DataFrame(drops, index=df.index)
     return [", ".join(f"{k} (+{100 * v:.0f})" for k, v in row.nlargest(top).items() if v > 0.005) or "none dominant"
@@ -68,8 +69,10 @@ def display_score(p, thresholds) -> np.ndarray:
 
 def score_route(bundle, route: pd.DataFrame, data_time: str) -> pd.DataFrame:
     p = bundle.predict_proba(route)
-    reference = pd.Series(bundle.trained_on.get("reference", {}), dtype=float).reindex(RAW_FEATURES)
-    reference = reference.fillna(route[RAW_FEATURES].median())
+    known = [c for c in RAW_FEATURES + HISTORY_FEATURES if c in route.columns]
+    reference = pd.Series(bundle.trained_on.get("reference", {}), dtype=float).reindex(known)
+    # Missing history means "no report": the neutral value is 0.
+    reference = reference.fillna(route[known].median()).fillna(0.0)
     out = pd.DataFrame({
         "segment_id": route["segment_id"], "eta_min": route["eta_min"].round(1),
         "risk_score": display_score(p, bundle.thresholds),

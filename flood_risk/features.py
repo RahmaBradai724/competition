@@ -3,7 +3,7 @@
 import numpy as np
 import pandas as pd
 
-from .schema import RAIN_REF_MMH, RAW_FEATURES, DRAINAGE_FEATURES
+from .schema import DRAINAGE_FEATURES, HISTORY_FEATURES, RAIN_REF_MMH, RAW_FEATURES, RELATIVE_FEATURES
 
 
 def drainage_vulnerability(df: pd.DataFrame) -> pd.Series:
@@ -23,6 +23,10 @@ def effective_rain_threshold(dv: pd.Series) -> pd.Series:
 
 def engineer(df: pd.DataFrame, use_drainage: bool = True) -> pd.DataFrame:
     out = df[RAW_FEATURES].copy()
+    for col in HISTORY_FEATURES:
+        out[col] = df[col] if col in df.columns else 0.0
+    for col in RELATIVE_FEATURES:
+        out[col] = df[col] if col in df.columns else 0.5
     dv = drainage_vulnerability(df) if use_drainage else pd.Series(0.0, index=df.index)
     out["drainage_vuln"] = dv
     out["rain_excess_ratio"] = (df["rain_eta_mmh"] + 0.25 * df["rain_1h_mm"]) / effective_rain_threshold(dv)
@@ -33,7 +37,7 @@ def engineer(df: pd.DataFrame, use_drainage: bool = True) -> pd.DataFrame:
     out = out.drop(columns=["dist_wadi_m", "slope_pct"])
     if not use_drainage:
         out = out.drop(columns=DRAINAGE_FEATURES + ["drainage_vuln"])
-    return out
+    return out.astype("float32")
 
 
 # +1: risk can only increase with the feature, -1: only decrease, 0: free.
@@ -43,6 +47,8 @@ MONOTONIC = {
     "black_spot_count": 1, "rain_eta_mmh": 1, "rain_1h_mm": 1, "rain_3h_mm": 1,
     "rain_24h_mm": 1, "dry_spell_days": 1, "drainage_vuln": 1, "rain_excess_ratio": 1,
     "runoff_index": 1, "wadi_rain": 1, "log_dist_wadi": -1, "log_slope": -1,
+    "flood_reports_250m": 1, "flood_reports_365d": 1, "basin_reports_prior": 1,
+    "elevation_rel_pct": -1, "dist_wadi_pct": -1, "twi_pct": 1, "impervious_pct": 0,
 }
 
 # Groups of raw columns shown to the user as "main contributing factors" (FR-13).
@@ -51,8 +57,8 @@ FACTOR_GROUPS = {
     "rain already fallen": ["rain_1h_mm", "rain_3h_mm", "rain_24h_mm"],
     "depression / low point": ["twi", "depression_depth_m", "elevation_rel_m", "slope_pct"],
     "wadi proximity": ["dist_wadi_m", "ford"],
-    "drainage vulnerability": ["drain_inlet_density", "dry_spell_days"],
+    "drainage vulnerability": ["drain_inlet_density", "dry_spell_days", "basin_reports_prior"],
     "impervious surface": ["impervious_frac"],
-    "past floods": ["black_spot_count"],
+    "past floods": ["black_spot_count", "flood_reports_250m", "flood_reports_365d"],
     "underpass": ["underpass"],
 }

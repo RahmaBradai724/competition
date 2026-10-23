@@ -1,0 +1,58 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-10-23T11:40:06Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 4631438780,
+  "lat": 38.2735341,
+  "lon": -0.7408362,
+  "tags": {
+    "manhole": "drain"
+  }
+},
+{
+  "type": "node",
+  "id": 6483633280,
+  "lat": 38.0910141,
+  "lon": -0.8808382,
+  "tags": {
+    "manhole": "drain"
+  }
+},
+{
+  "type": "node",
+  "id": 6483634287,
+  "lat": 38.0907494,
+  "lon": -0.8807804,
+  "tags": {
+    "manhole": "drain"
+  }
+},
+{
+  "type": "node",
+  "id": 6483634288,
+  "lat": 38.0903157,
+  "lon": -0.8806896,
+  "tags": {
+    "manhole": "drain"
+  }
+},
+{
+  "type": "node",
+  "id": 10172458083,
+  "lat": 37.9640828,
+  "lon": -0.7272514,
+  "tags": {
+    "man_made": "manhole",
+    "manhole": "drain"
+  }
+}
+
+  ]
+}

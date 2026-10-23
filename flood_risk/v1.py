@@ -27,6 +27,19 @@ def factors(df: pd.DataFrame) -> pd.DataFrame:
     }, index=df.index)
 
 
+def relative_susceptibility(df: pd.DataFrame, area_col: str | None = None) -> np.ndarray:
+    """0..100 static score from the segment's position within its area: low points near a watercourse rank highest.
+
+    Percentiles are taken inside each area so the score does not depend on the area's absolute
+    elevation or mapping density. It suits flash floods on plains (Nabeul 2018: ROC-AUC 0.80) but
+    not urban street flooding (New York: 0.48). The rule was chosen after looking at the Nabeul
+    medians, so it must be confirmed on another Tunisian event before being trusted.
+    """
+    groups = df.groupby(area_col) if area_col else None
+    pct = lambda c: (groups[c] if groups is not None else df[c]).rank(pct=True)
+    return (100 * (1 - (pct("elevation_rel_m") + pct("dist_wadi_m")) / 2)).to_numpy()
+
+
 def score(df: pd.DataFrame) -> np.ndarray:
     f = factors(df)
     s = sum(w * f[k] for k, w in WEIGHTS.items())

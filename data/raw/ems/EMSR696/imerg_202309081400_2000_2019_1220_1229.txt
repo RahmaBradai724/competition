@@ -1,0 +1,21 @@
+Dataset: 3B-HHR.MS.MRG.3IMERG.20230908-S140000-E142959.0840.V07B.HDF5
+precipitation[0][0], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation[0][1], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation[0][2], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation[0][3], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation[0][4], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation[0][5], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation[0][6], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation[0][7], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation[0][8], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation[0][9], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation[0][10], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation[0][11], 0, 0, 0, 0, 0, 0, 0, 0, 1.53, 0
+precipitation[0][12], 0, 0, 0, 0, 0, 0, 1.84, 5.23, 1.57, 0
+precipitation[0][13], 0, 0, 0, 0, 0, 0, 0, 0, 1.26, 0
+precipitation[0][14], 0, 0, 0, 0, 0, 0, 0, 0, 1.27, 0
+precipitation[0][15], 0, 0, 0, 0, 0, 0, 0, 0, 1.84, 0.88
+precipitation[0][16], 0, 0, 0, 0, 0, 0, 0, 0, 1.87, 0
+precipitation[0][17], 0, 0, 0, 0, 0, 0, 0, 0, 0.72, 0
+precipitation[0][18], 0, 0, 0, 0, 0, 0, 0, 0.49, 0.75, 0.55
+precipitation[0][19], 0, 0, 0, 0, 0, 0, 0, 0.49, 3.4, 0.44

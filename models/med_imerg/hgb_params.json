@@ -1,0 +1,6 @@
+{
+  "learning_rate": 0.03,
+  "max_leaf_nodes": 15,
+  "min_samples_leaf": 40,
+  "max_features": 0.5
+}

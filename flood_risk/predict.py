@@ -5,6 +5,12 @@
 
 The route CSV has one row per segment with the raw features of schema.py at the segment's
 ETA, plus `segment_id`, `eta_min`, `rain_interpolated` and `data_age_min`.
+
+Levels follow the alert budget of each area (FR-24, schema.ALERT_SHARE) when the model was
+trained with `--levels area`: the whole area is scored for the same forecast, and a route
+segment is High if it is among the riskiest 2 % of its area. Pass the area with `--area`
+(every segment of the zone, same columns plus `aoi` when several zones are served). Without
+it, the fixed probability thresholds stored in the model are used.
 """
 
 import argparse
@@ -14,8 +20,9 @@ import joblib
 import numpy as np
 import pandas as pd
 
+from . import v2
 from .features import FACTOR_GROUPS, drainage_vulnerability
-from .schema import HISTORY_FEATURES, RAW_FEATURES
+from .schema import ALERT_SHARE, HISTORY_FEATURES, RAW_FEATURES
 
 
 def confidence(df: pd.DataFrame) -> pd.DataFrame:
@@ -43,15 +50,19 @@ def confidence(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def explain(bundle, df: pd.DataFrame, reference: pd.Series, top: int = 3) -> list:
-    """Main contributing factors: probability drop when a factor group is set to a typical value."""
-    base = bundle.predict_proba(df)
+    """Main contributing factors: score drop when a factor group is set to a typical value.
+
+    Uses the model's raw score: calibration merges most of a new area into a few flat steps,
+    where every factor would look negligible.
+    """
+    base = bundle.raw(df)
     drops = {}
     for name, cols in FACTOR_GROUPS.items():
         neutral = df.copy()
         for col in cols:
             if col in neutral.columns:
                 neutral[col] = reference.get(col, 0.0)
-        drops[name] = base - bundle.predict_proba(neutral)
+        drops[name] = base - bundle.raw(neutral)
     drops = pd.DataFrame(drops, index=df.index)
     return [", ".join(f"{k} (+{100 * v:.0f})" for k, v in row.nlargest(top).items() if v > 0.005) or "none dominant"
             for _, row in drops.iterrows()]
@@ -64,20 +75,47 @@ def display_score(p, thresholds) -> np.ndarray:
     it raw as "7/100" would read as safe. The probability is reported next to the score.
     """
     knots = [0, thresholds["Moderate"], thresholds["High"], thresholds["Very high"], 1]
+    # Tied thresholds (a flat area) would make np.interp ill-defined: keep the knots increasing.
+    knots = np.maximum.accumulate(np.array(knots) + np.arange(5) * 1e-9)
     return np.round(np.interp(p, knots, [0, 25, 50, 75, 100])).astype(int)
 
 
-def score_route(bundle, route: pd.DataFrame, data_time: str) -> pd.DataFrame:
+def area_thresholds(bundle, area: pd.DataFrame, shares=ALERT_SHARE) -> dict:
+    """Probability thresholds of each area for the current forecast: the top `shares[level]` reach the level.
+
+    Returns {area id: {level: threshold}}; the id is `aoi` when present, otherwise a single "all".
+    """
+    p = pd.Series(bundle.predict_proba(area), index=area.index)
+    groups = area["aoi"] if "aoi" in area.columns else pd.Series("all", index=area.index)
+    return {aoi: {level: float(np.quantile(p[idx], 1 - share)) for level, share in shares.items()}
+            for aoi, idx in groups.groupby(groups).groups.items()}
+
+
+def route_thresholds(bundle, route: pd.DataFrame, area: pd.DataFrame | None) -> list:
+    """Thresholds to apply to each route segment: those of its area, or the model's fixed ones."""
+    use_area = area is not None and bundle.trained_on.get("levels") in ("area", "budget")
+    if not use_area:
+        return [bundle.thresholds] * len(route)
+    by_area = area_thresholds(bundle, area)
+    ids = route["aoi"] if "aoi" in route.columns else pd.Series("all", index=route.index)
+    missing = set(ids) - set(by_area)
+    if missing:
+        raise ValueError(f"route segments in areas that were not scored: {sorted(missing)}")
+    return [by_area[a] for a in ids]
+
+
+def score_route(bundle, route: pd.DataFrame, data_time: str, area: pd.DataFrame | None = None) -> pd.DataFrame:
     p = bundle.predict_proba(route)
+    thresholds = route_thresholds(bundle, route, area)
     known = [c for c in RAW_FEATURES + HISTORY_FEATURES if c in route.columns]
     reference = pd.Series(bundle.trained_on.get("reference", {}), dtype=float).reindex(known)
     # Missing history means "no report": the neutral value is 0.
     reference = reference.fillna(route[known].median()).fillna(0.0)
     out = pd.DataFrame({
         "segment_id": route["segment_id"], "eta_min": route["eta_min"].round(1),
-        "risk_score": display_score(p, bundle.thresholds),
+        "risk_score": [int(display_score(np.array([pi]), t)[0]) for pi, t in zip(p, thresholds)],
         "flood_prob_pct": np.round(100 * p, 1),
-        "level": bundle.predict_level(route),
+        "level": [v2.to_level(np.array([pi]), t)[0] for pi, t in zip(p, thresholds)],
     }, index=route.index)
     out = out.join(confidence(route))
     out["main_factors"] = explain(bundle, route, reference)
@@ -103,18 +141,23 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="models/v2_hgb.joblib")
     ap.add_argument("--route")
+    ap.add_argument("--area", help="every segment of the route's area(s) at the same forecast time, for budget levels")
     ap.add_argument("--demo", action="store_true")
     ap.add_argument("--alert-level", default="High")
     args = ap.parse_args()
 
     bundle = joblib.load(args.model)
     route = demo_route(np.random.default_rng(7)) if args.demo else pd.read_csv(args.route)
+    area = pd.read_csv(args.area) if args.area else None
+    if area is None and bundle.trained_on.get("levels") in ("area", "budget"):
+        print("warning: model expects budget levels but no --area was given; using its fixed thresholds")
     now = datetime.now(timezone.utc).isoformat(timespec="minutes")
-    res = score_route(bundle, route, now)
+    res = score_route(bundle, route, now, area)
 
     pd.set_option("display.width", 200, "display.max_colwidth", 70)
+    mode = f"budget levels from {len(area)} area segments" if area is not None else f"thresholds {bundle.thresholds}"
     print(f"model {bundle.kind}, trained {bundle.trained_on.get('trained_at')} on "
-          f"{bundle.trained_on.get('events')} events; thresholds {bundle.thresholds}")
+          f"{bundle.trained_on.get('events')} events; {mode}")
     print("Risk = possibility of flooding, not certainty. This complements official warnings: "
           "never drive into a flooded road.\n")
     print(res["level"].value_counts().reindex(["Low", "Moderate", "High", "Very high"], fill_value=0).to_string())

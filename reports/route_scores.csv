@@ -1,34 +1,34 @@
 segment_id,eta_min,risk_score,flood_prob_pct,level,confidence,confidence_level,confidence_notes,main_factors,data_timestamp
-S00363,0.0,17,0.5,Low,0.5,Medium,rainfall interpolated from hourly forecast; rainfall data older than 15 min; high estimated drainage vulnerability,none dominant,2026-10-23T10:30+00:00
-S00388,0.8,5,0.1,Low,0.55,Medium,rainfall interpolated from hourly forecast; area poorly mapped; high estimated drainage vulnerability,none dominant,2026-10-23T10:30+00:00
-S00098,1.6,17,0.5,Low,0.7,High,rainfall interpolated from hourly forecast; high estimated drainage vulnerability,none dominant,2026-10-23T10:30+00:00
-S00309,2.3,24,0.7,Low,0.8,High,rainfall interpolated from hourly forecast,none dominant,2026-10-23T10:30+00:00
-S00662,3.1,25,0.7,Moderate,0.45,Medium,rainfall interpolated from hourly forecast; rainfall data older than 15 min; area poorly mapped,none dominant,2026-10-23T10:30+00:00
-S00790,3.9,24,0.7,Low,0.8,High,rainfall interpolated from hourly forecast,none dominant,2026-10-23T10:30+00:00
-S00715,4.7,24,0.7,Low,0.7,High,rainfall interpolated from hourly forecast; high estimated drainage vulnerability,none dominant,2026-10-23T10:30+00:00
-S00254,5.5,50,3.1,High,0.6,Medium,rainfall interpolated from hourly forecast; rainfall data older than 15 min,"depression / low point (+2), rain already fallen (+1)",2026-10-23T10:30+00:00
-S00318,6.2,27,0.8,Moderate,0.8,High,rainfall interpolated from hourly forecast,none dominant,2026-10-23T10:30+00:00
-S00730,7.0,24,0.7,Low,0.7,High,rainfall interpolated from hourly forecast; high estimated drainage vulnerability,none dominant,2026-10-23T10:30+00:00
-S00475,7.8,31,1.3,Moderate,0.7,High,rainfall interpolated from hourly forecast; high estimated drainage vulnerability,impervious surface (+1),2026-10-23T10:30+00:00
-S00493,8.6,59,8.9,High,0.7,High,"rainfall interpolated from hourly forecast; dense urban area, drain state unknown","underpass (+7), forecast rainfall (+6), impervious surface (+6)",2026-10-23T10:30+00:00
-S00186,9.4,40,2.1,Moderate,0.7,High,rainfall interpolated from hourly forecast; high estimated drainage vulnerability,"forecast rainfall (+1), rain already fallen (+1), drainage vulnerability (+1)",2026-10-23T10:30+00:00
-S00659,10.2,72,17.2,High,0.8,High,rainfall interpolated from hourly forecast; high estimated drainage vulnerability; documented past floods here,"rain already fallen (+14), forecast rainfall (+11), depression / low point (+5)",2026-10-23T10:30+00:00
-S00625,10.9,59,8.9,High,0.5,Medium,"rainfall interpolated from hourly forecast; rainfall data older than 15 min; dense urban area, drain state unknown; high estimated drainage vulnerability; documented past floods here","rain already fallen (+6), forecast rainfall (+4), depression / low point (+2)",2026-10-23T10:30+00:00
-S00311,11.7,54,5.5,High,0.7,High,"rainfall interpolated from hourly forecast; dense urban area, drain state unknown","rain already fallen (+5), forecast rainfall (+4), impervious surface (+4)",2026-10-23T10:30+00:00
-S00782,12.5,29,1.0,Moderate,0.8,High,rainfall interpolated from hourly forecast,none dominant,2026-10-23T10:30+00:00
-S00144,13.3,50,3.1,High,0.6,Medium,"rainfall interpolated from hourly forecast; dense urban area, drain state unknown; high estimated drainage vulnerability","rain already fallen (+2), impervious surface (+2), forecast rainfall (+2)",2026-10-23T10:30+00:00
-S00557,14.1,70,15.8,High,0.7,High,"rainfall interpolated from hourly forecast; dense urban area, drain state unknown","rain already fallen (+12), forecast rainfall (+9), depression / low point (+9)",2026-10-23T10:30+00:00
-S00744,14.8,70,15.8,High,0.7,High,"rainfall interpolated from hourly forecast; dense urban area, drain state unknown","forecast rainfall (+12), rain already fallen (+12), impervious surface (+11)",2026-10-23T10:30+00:00
-S00288,15.6,59,8.9,High,0.6,Medium,"rainfall interpolated from hourly forecast; dense urban area, drain state unknown; high estimated drainage vulnerability","forecast rainfall (+7), impervious surface (+6), rain already fallen (+4)",2026-10-23T10:30+00:00
-S00705,16.4,70,15.8,High,0.7,High,"rainfall interpolated from hourly forecast; dense urban area, drain state unknown; high estimated drainage vulnerability; documented past floods here","rain already fallen (+12), impervious surface (+9), forecast rainfall (+7)",2026-10-23T10:30+00:00
-S00674,17.2,40,2.1,Moderate,0.6,Medium,"rainfall interpolated from hourly forecast; dense urban area, drain state unknown; high estimated drainage vulnerability","forecast rainfall (+2), impervious surface (+2), rain already fallen (+1)",2026-10-23T10:30+00:00
-S00772,18.0,64,12.1,High,0.35,Low,"rainfall interpolated from hourly forecast; rainfall data older than 15 min; rainfall data older than 1 h; dense urban area, drain state unknown; high estimated drainage vulnerability; documented past floods here","rain already fallen (+9), forecast rainfall (+9), impervious surface (+9)",2026-10-23T10:30+00:00
-S00119,18.8,54,5.5,High,0.8,High,rainfall interpolated from hourly forecast,"rain already fallen (+5), forecast rainfall (+4), impervious surface (+2)",2026-10-23T10:30+00:00
-S00492,19.5,59,8.9,High,0.6,Medium,"rainfall interpolated from hourly forecast; dense urban area, drain state unknown; high estimated drainage vulnerability","impervious surface (+8), forecast rainfall (+6), rain already fallen (+6)",2026-10-23T10:30+00:00
-S00648,20.3,50,3.4,High,0.9,High,rainfall interpolated from hourly forecast; documented past floods here,"rain already fallen (+3), forecast rainfall (+2), impervious surface (+2)",2026-10-23T10:30+00:00
-S00105,21.1,59,8.9,High,0.6,Medium,rainfall interpolated from hourly forecast; rainfall data older than 15 min,"rain already fallen (+8), forecast rainfall (+5), depression / low point (+5)",2026-10-23T10:30+00:00
-S00255,21.9,50,3.1,High,0.7,High,rainfall interpolated from hourly forecast; high estimated drainage vulnerability,"depression / low point (+1), forecast rainfall (+1), rain already fallen (+1)",2026-10-23T10:30+00:00
-S00006,22.7,24,0.7,Low,0.8,High,rainfall interpolated from hourly forecast,none dominant,2026-10-23T10:30+00:00
-S00620,23.4,40,2.1,Moderate,0.8,High,rainfall interpolated from hourly forecast,"forecast rainfall (+1), impervious surface (+1), rain already fallen (+1)",2026-10-23T10:30+00:00
-S00706,24.2,25,0.7,Moderate,0.8,High,rainfall interpolated from hourly forecast,none dominant,2026-10-23T10:30+00:00
-S00333,25.0,40,2.1,Moderate,0.65,Medium,rainfall interpolated from hourly forecast; area poorly mapped,"depression / low point (+1), forecast rainfall (+1), rain already fallen (+1)",2026-10-23T10:30+00:00
+S00363,0.0,17,0.5,Low,0.5,Medium,rainfall interpolated from hourly forecast; rainfall data older than 15 min; high estimated drainage vulnerability,none dominant,2026-10-23T20:44+00:00
+S00388,0.8,5,0.1,Low,0.55,Medium,rainfall interpolated from hourly forecast; area poorly mapped; high estimated drainage vulnerability,none dominant,2026-10-23T20:44+00:00
+S00098,1.6,17,0.5,Low,0.7,High,rainfall interpolated from hourly forecast; high estimated drainage vulnerability,none dominant,2026-10-23T20:44+00:00
+S00309,2.3,24,0.7,Low,0.8,High,rainfall interpolated from hourly forecast,none dominant,2026-10-23T20:44+00:00
+S00662,3.1,25,0.7,Moderate,0.45,Medium,rainfall interpolated from hourly forecast; rainfall data older than 15 min; area poorly mapped,none dominant,2026-10-23T20:44+00:00
+S00790,3.9,24,0.7,Low,0.8,High,rainfall interpolated from hourly forecast,none dominant,2026-10-23T20:44+00:00
+S00715,4.7,24,0.7,Low,0.7,High,rainfall interpolated from hourly forecast; high estimated drainage vulnerability,none dominant,2026-10-23T20:44+00:00
+S00254,5.5,50,3.1,High,0.6,Medium,rainfall interpolated from hourly forecast; rainfall data older than 15 min,"depression / low point (+2), rain already fallen (+1)",2026-10-23T20:44+00:00
+S00318,6.2,27,0.8,Moderate,0.8,High,rainfall interpolated from hourly forecast,none dominant,2026-10-23T20:44+00:00
+S00730,7.0,24,0.7,Low,0.7,High,rainfall interpolated from hourly forecast; high estimated drainage vulnerability,none dominant,2026-10-23T20:44+00:00
+S00475,7.8,31,1.3,Moderate,0.7,High,rainfall interpolated from hourly forecast; high estimated drainage vulnerability,impervious surface (+1),2026-10-23T20:44+00:00
+S00493,8.6,59,8.9,High,0.7,High,"rainfall interpolated from hourly forecast; dense urban area, drain state unknown","underpass (+8), forecast rainfall (+7), impervious surface (+7)",2026-10-23T20:44+00:00
+S00186,9.4,40,2.1,Moderate,0.7,High,rainfall interpolated from hourly forecast; high estimated drainage vulnerability,forecast rainfall (+1),2026-10-23T20:44+00:00
+S00659,10.2,72,17.2,High,0.8,High,rainfall interpolated from hourly forecast; high estimated drainage vulnerability; documented past floods here,"rain already fallen (+17), forecast rainfall (+13), depression / low point (+8)",2026-10-23T20:44+00:00
+S00625,10.9,59,8.9,High,0.5,Medium,"rainfall interpolated from hourly forecast; rainfall data older than 15 min; dense urban area, drain state unknown; high estimated drainage vulnerability; documented past floods here","rain already fallen (+8), forecast rainfall (+6), depression / low point (+4)",2026-10-23T20:44+00:00
+S00311,11.7,54,5.5,High,0.7,High,"rainfall interpolated from hourly forecast; dense urban area, drain state unknown","rain already fallen (+4), forecast rainfall (+4), impervious surface (+4)",2026-10-23T20:44+00:00
+S00782,12.5,29,1.0,Moderate,0.8,High,rainfall interpolated from hourly forecast,none dominant,2026-10-23T20:44+00:00
+S00144,13.3,50,3.1,High,0.6,Medium,"rainfall interpolated from hourly forecast; dense urban area, drain state unknown; high estimated drainage vulnerability","impervious surface (+2), rain already fallen (+2), forecast rainfall (+2)",2026-10-23T20:44+00:00
+S00557,14.1,70,15.8,High,0.7,High,"rainfall interpolated from hourly forecast; dense urban area, drain state unknown","rain already fallen (+13), forecast rainfall (+10), depression / low point (+9)",2026-10-23T20:44+00:00
+S00744,14.8,70,15.8,High,0.7,High,"rainfall interpolated from hourly forecast; dense urban area, drain state unknown","rain already fallen (+14), forecast rainfall (+13), impervious surface (+13)",2026-10-23T20:44+00:00
+S00288,15.6,59,8.9,High,0.6,Medium,"rainfall interpolated from hourly forecast; dense urban area, drain state unknown; high estimated drainage vulnerability","forecast rainfall (+8), impervious surface (+8), rain already fallen (+6)",2026-10-23T20:44+00:00
+S00705,16.4,70,15.8,High,0.7,High,"rainfall interpolated from hourly forecast; dense urban area, drain state unknown; high estimated drainage vulnerability; documented past floods here","rain already fallen (+12), impervious surface (+9), forecast rainfall (+8)",2026-10-23T20:44+00:00
+S00674,17.2,40,2.1,Moderate,0.6,Medium,"rainfall interpolated from hourly forecast; dense urban area, drain state unknown; high estimated drainage vulnerability","impervious surface (+1), forecast rainfall (+1), rain already fallen (+1)",2026-10-23T20:44+00:00
+S00772,18.0,64,12.1,High,0.35,Low,"rainfall interpolated from hourly forecast; rainfall data older than 15 min; rainfall data older than 1 h; dense urban area, drain state unknown; high estimated drainage vulnerability; documented past floods here","rain already fallen (+9), impervious surface (+8), forecast rainfall (+8)",2026-10-23T20:44+00:00
+S00119,18.8,54,5.5,High,0.8,High,rainfall interpolated from hourly forecast,"rain already fallen (+4), forecast rainfall (+3), impervious surface (+2)",2026-10-23T20:44+00:00
+S00492,19.5,59,8.9,High,0.6,Medium,"rainfall interpolated from hourly forecast; dense urban area, drain state unknown; high estimated drainage vulnerability","impervious surface (+6), rain already fallen (+5), forecast rainfall (+5)",2026-10-23T20:44+00:00
+S00648,20.3,50,3.4,High,0.9,High,rainfall interpolated from hourly forecast; documented past floods here,"rain already fallen (+3), forecast rainfall (+3), impervious surface (+3)",2026-10-23T20:44+00:00
+S00105,21.1,59,8.9,High,0.6,Medium,rainfall interpolated from hourly forecast; rainfall data older than 15 min,"rain already fallen (+6), forecast rainfall (+4), depression / low point (+4)",2026-10-23T20:44+00:00
+S00255,21.9,50,3.1,High,0.7,High,rainfall interpolated from hourly forecast; high estimated drainage vulnerability,"depression / low point (+1), forecast rainfall (+1), rain already fallen (+1)",2026-10-23T20:44+00:00
+S00006,22.7,24,0.7,Low,0.8,High,rainfall interpolated from hourly forecast,none dominant,2026-10-23T20:44+00:00
+S00620,23.4,40,2.1,Moderate,0.8,High,rainfall interpolated from hourly forecast,"forecast rainfall (+1), impervious surface (+1), rain already fallen (+1)",2026-10-23T20:44+00:00
+S00706,24.2,25,0.7,Moderate,0.8,High,rainfall interpolated from hourly forecast,none dominant,2026-10-23T20:44+00:00
+S00333,25.0,40,2.1,Moderate,0.65,Medium,rainfall interpolated from hourly forecast; area poorly mapped,depression / low point (+1),2026-10-23T20:44+00:00

@@ -49,6 +49,9 @@ MONOTONIC = {
     "runoff_index": 1, "wadi_rain": 1, "log_dist_wadi": -1, "log_slope": -1,
     "flood_reports_250m": 1, "flood_reports_365d": 1, "basin_reports_prior": 1,
     "elevation_rel_pct": -1, "dist_wadi_pct": -1, "twi_pct": 1, "impervious_pct": 0,
+    # v2.INTERACTIONS: more rain on a more exposed segment can only raise the risk; rain x elevation
+    # mixes a rising and a falling factor, so it stays free.
+    "rain1h_x_impervious": 1, "rain24h_x_depression": 1, "rain1h_x_twi": 1, "rain3h_x_elevation": 0,
 }
 
 # Groups of raw columns shown to the user as "main contributing factors" (FR-13).

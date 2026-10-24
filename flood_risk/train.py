@@ -27,9 +27,18 @@ import matplotlib.pyplot as plt  # noqa: E402
 
 LEADS_MIN = [0, 10, 20, 30]
 MAIN_LEAD = 20
+LEVEL_PROTOCOL = {
+    "recall": "The High threshold is placed for 70% recall on training events, so recall is a design target; "
+              "the false-alarm rate at that recall is the real comparison.",
+    "budget": "Levels are placed by alert budget on training events (schema.ALERT_SHARE: High = top 2 % of rows).",
+    "area": "Levels follow an alert budget inside each mapped area of the test event (schema.ALERT_SHARE: "
+            "High = riskiest 2 % of each area), so every model raises the same number of alerts and "
+            "recall and false-alarm rate compare directly.",
+}
 NAMES = {"v1": "V1 multi-criteria", "v1_relative": "Relative susceptibility", "logistic": "V2 logistic",
          "hgb": "V2 gradient boosting", "hgb_no_drainage": "V2 GB without drainage proxies",
-         "hgb_terrain": "V2 GB terrain only"}
+         "hgb_terrain": "V2 GB terrain only", "hgb_rain": "V2 GB rain only",
+         "hgb_inter": "V2 GB + rain x terrain products", "hybrid": "V2 hybrid (terrain, then rain)"}
 
 
 def with_forecast_error(df: pd.DataFrame, lead_min, rng) -> pd.DataFrame:
@@ -50,9 +59,15 @@ def with_forecast_error(df: pd.DataFrame, lead_min, rng) -> pd.DataFrame:
     return out
 
 
-def metrics(p, levels, y) -> dict:
+def metrics(p, levels, y, base_rate: float | None = None) -> dict:
+    """Section 8 metrics; with `base_rate` (flood rate of the training rows) also the Brier skill score
+    against a constant forecast of that rate: 1 = perfect, 0 = no better than the constant, < 0 = worse."""
     alert = np.isin(levels, ["High", "Very high"])
     tp = int((alert & (y == 1)).sum())
+    ref = {}
+    if base_rate is not None:
+        brier_ref = float(np.mean((base_rate - y) ** 2))
+        ref = {"brier_ref": brier_ref, "bss": 1 - brier_score_loss(y, p) / brier_ref}
     return {
         "recall_high": tp / max(int(y.sum()), 1),
         "false_alarm": 1 - tp / max(int(alert.sum()), 1),
@@ -64,6 +79,7 @@ def metrics(p, levels, y) -> dict:
         "brier": brier_score_loss(y, p),
         "ece": ece(p, y),
         **{f"recall_top{int(100 * share)}": budget_recall(p, y, share) for share in (0.01, 0.02, 0.05)},
+        **ref,
     }
 
 
@@ -91,6 +107,7 @@ def cross_validate(df: pd.DataFrame, n_folds: int, seed: int, neg_sample: float 
         # Training rows see forecasts with a random lead, like the operational inputs.
         train = with_forecast_error(df.iloc[tr], rng.uniform(0, 30, len(tr)), rng)
         test_events = ",".join(sorted(map(str, df.iloc[te]["event_id"].unique())))
+        base_rate = float(df.iloc[tr][LABEL].mean())   # reference of the Brier skill score, from training rows only
         for kind in kinds:
             b = v2.fit(kind, train, seed, neg_sample=neg_sample, params=params, levels=levels)
             for lead in LEADS_MIN:
@@ -102,7 +119,7 @@ def cross_validate(df: pd.DataFrame, n_folds: int, seed: int, neg_sample: float 
                 for target in ["flooded", "flooded_true"]:
                     if target in test:
                         rows.append({"fold": fold, "events": test_events, "model": kind, "lead": lead, "target": target,
-                                     **metrics(p, lv, test[target].to_numpy())})
+                                     **metrics(p, lv, test[target].to_numpy(), base_rate)})
                 # Event level: was the segment flooded at some point of the storm?
                 ev = pd.DataFrame({"p": p, "y": test[LABEL].to_numpy(), "seg": test["segment_id"].to_numpy(),
                                    "ev": test["event_id"].to_numpy(),
@@ -110,7 +127,7 @@ def cross_validate(df: pd.DataFrame, n_folds: int, seed: int, neg_sample: float 
                 ev_lv = (v2.levels_by_share(ev["p"].to_numpy(), ev["area"].to_numpy()) if levels == "area"
                          else v2.to_level(ev["p"].to_numpy(), b.thresholds))
                 rows.append({"fold": fold, "events": test_events, "model": kind, "lead": lead, "target": "event_level",
-                             **metrics(ev["p"].to_numpy(), ev_lv, ev["y"].to_numpy())})
+                             **metrics(ev["p"].to_numpy(), ev_lv, ev["y"].to_numpy(), base_rate)})
                 if lead == MAIN_LEAD:
                     oof[kind][te] = p
         print(f"fold {fold + 1}/{n_folds} done ({df.iloc[te]['event_id'].nunique()} test events)")
@@ -255,9 +272,8 @@ def main():
         "",
         f"Protocol: {args.folds}-fold cross-validation grouped by storm event (a storm is never in train "
         "and test). Inside each training fold, calibration and level thresholds use out-of-fold "
-        f"predictions, also grouped by event. The High threshold is placed for {int(100*0.70)}% recall "
-        "on training events, so recall is a design target; the false-alarm rate at that recall is the "
-        "real comparison. Rainfall at ETA is replaced by a forecast whose error grows with lead time.",
+        "predictions, also grouped by event. " + LEVEL_PROTOCOL[args.levels] + " Rainfall at ETA is "
+        "replaced by a forecast whose error grows with lead time.",
         "",
         f"## Results against documented floods (lead {MAIN_LEAD} min)",
         "",
@@ -291,7 +307,8 @@ def main():
         "This test alone does not prove the drainage hypothesis: high-vulnerability segments are also "
         "the most impervious, and impervious roads flood at lower rainfall whatever the state of their "
         "drains. The ablation row *V2 GB without drainage proxies* is the stronger test: the proxies are "
-        "useful only if removing them lowers PR-AUC or raises the false-alarm rate on held-out storms.",
+        "useful only if removing them lowers PR-AUC or raises the false-alarm rate on held-out storms"
+        + ("." if "hgb_no_drainage" in args.kinds else " (that row was not run here: add `hgb_no_drainage` to --kinds)."),
         "",
         "## Feature importance (final gradient-boosting model)", "", "![importance](importance.png)", "",
         "| Feature | Drop in PR-AUC |", "|---|---|",

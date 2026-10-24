@@ -2,7 +2,7 @@
 
 This file lists what the application must send to the V2 model, what the model sends back,
 and how to build each input in PostGIS. Code: `flood_risk/predict.py`. Model file:
-`models/med_imerg/v2_hgb.joblib`, a gradient-boosting model trained on 13 Mediterranean
+`models/med_imerg_tuned/v2_hgb.joblib`, a gradient-boosting model trained on 13 Mediterranean
 flash floods with GPM IMERG rain.
 
 ## 1. How the model is called
@@ -21,14 +21,14 @@ and the thresholds change with every forecast.
 import joblib
 from flood_risk.predict import score_route
 
-bundle = joblib.load("models/med_imerg/v2_hgb.joblib")
+bundle = joblib.load("models/med_imerg_tuned/v2_hgb.joblib")
 result = score_route(bundle, route_df, data_time="2026-10-23T14:00Z", area=area_df)
 ```
 
 The same call from the command line:
 
 ```
-python -m flood_risk.predict --model models/med_imerg/v2_hgb.joblib --route route.csv --area area.csv
+python -m flood_risk.predict --model models/med_imerg_tuned/v2_hgb.joblib --route route.csv --area area.csv
 ```
 
 If `area` is missing, the model falls back to fixed probability thresholds and prints a warning.
@@ -176,7 +176,7 @@ Notes:
 ## 5. Rules for the application
 
 1. **Show `level` and `risk_score`, not `flood_prob_pct`.** The probability is calibrated on
-   average over all training floods, so it varies little inside one zone (e.g. about 9.8 % on
+   average over all training floods, so it varies little inside one zone (e.g. about 10 % on
    every Nabeul segment). The level is computed from the ranking, and it is reliable.
 2. **Score the whole zone for every forecast run**, then read the route segments from it. One
    run over a zone of 30 000 segments takes a few seconds.
@@ -185,8 +185,8 @@ Notes:
    replace official warnings.
 5. Validated performance on 13 floods the model never saw:
    - ROC-AUC 0.74 (V1: 0.58);
-   - High alerts are right 27 % of the time, against about 11 % for random alerts;
-   - Nabeul 2018: ROC-AUC 0.80, with 33 % of flooded segments caught at High while 2 % of the
+   - High alerts are right 26 % of the time, against about 11 % for random alerts;
+   - Nabeul 2018: ROC-AUC 0.81, with 35 % of flooded segments caught at High while 2 % of the
      roads are alerted.
 
    Details are in `pipeline_v2.ipynb`.

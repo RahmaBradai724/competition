@@ -1,10 +1,10 @@
 # Version 2 evaluation report
 
-Data: `C:/Users/Rahma/AppData/Local/Temp/claude/d--competition/b3823567-160c-47d6-aadd-ec92fb208c8d/scratchpad/med_imerg_dedup.csv.gz`: 216171 rows, 13 storm events, 213489 segments, 23340 documented flooded rows (10.80%).
+Data: `data/inventory_med_imerg.csv.gz` (overlapping areas merged): 216171 rows, 13 storm events, 213489 segments, 23340 documented flooded rows (10.80%).
 
 
 
-Protocol: 13-fold cross-validation grouped by storm event (a storm is never in train and test). Inside each training fold, calibration and level thresholds use out-of-fold predictions, also grouped by event. The High threshold is placed for 70% recall on training events, so recall is a design target; the false-alarm rate at that recall is the real comparison. Rainfall at ETA is replaced by a forecast whose error grows with lead time.
+Protocol: 13-fold cross-validation grouped by storm event (a storm is never in train and test). Inside each training fold, calibration and level thresholds use out-of-fold predictions, also grouped by event. Levels follow an alert budget inside each mapped area of the test event (schema.ALERT_SHARE: High = riskiest 2 % of each area), so every model raises the same number of alerts and recall and false-alarm rate compare directly. Rainfall at ETA is replaced by a forecast whose error grows with lead time.
 
 ## Results against documented floods (lead 20 min)
 
@@ -34,7 +34,7 @@ One row per segment and storm: alert if the maximum level during the storm is Hi
 
 Among documented flooded rows, rainfall intensity at flooding for the top third of estimated drainage vulnerability: median 15.9 mm/h (n=7785); bottom third: 18.1 mm/h (n=7783). One-sided Mann-Whitney p = 4.1e-53.
 
-This test alone does not prove the drainage hypothesis: high-vulnerability segments are also the most impervious, and impervious roads flood at lower rainfall whatever the state of their drains. The ablation row *V2 GB without drainage proxies* is the stronger test: the proxies are useful only if removing them lowers PR-AUC or raises the false-alarm rate on held-out storms.
+This test alone does not prove the drainage hypothesis: high-vulnerability segments are also the most impervious, and impervious roads flood at lower rainfall whatever the state of their drains. The ablation row *V2 GB without drainage proxies* is the stronger test: the proxies are useful only if removing them lowers PR-AUC or raises the false-alarm rate on held-out storms (that row was not run here: the ablation is in `pipeline_v2.ipynb`, section 9.5).
 
 ## Feature importance (final gradient-boosting model)
 

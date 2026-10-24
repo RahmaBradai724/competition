@@ -8,7 +8,7 @@ import pandas as pd
 from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.isotonic import IsotonicRegression
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import GroupKFold
+from sklearn.model_selection import GroupKFold, KFold
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
@@ -25,9 +25,29 @@ RAIN_COLUMNS = ["rain_eta_mmh", "rain_1h_mm", "rain_3h_mm", "rain_24h_mm", "dry_
                 "rain_excess_ratio", "runoff_index", "wadi_rain"]
 
 
+# Baseline that sees the storm only: rainfall at the segment's cell and the dry spell before it.
+RAIN_ONLY = ["rain_eta_mmh", "rain_1h_mm", "rain_3h_mm", "rain_24h_mm", "dry_spell_days"]
+
+
+# Rain x terrain products tested by `hgb_inter` (the boosted trees can learn interactions alone:
+# the ablation hgb_inter vs hgb tells whether writing them out helps).
+INTERACTIONS = {
+    "rain1h_x_impervious": ("rain_1h_mm", "impervious_pct"),
+    "rain24h_x_depression": ("rain_24h_mm", "depression_depth_m"),
+    "rain1h_x_twi": ("rain_1h_mm", "twi_pct"),
+    "rain3h_x_elevation": ("rain_3h_mm", "elevation_rel_m"),
+}
+
+
 def features(kind: str, df: pd.DataFrame) -> pd.DataFrame:
     X = engineer(df, use_drainage=kind != "hgb_no_drainage")
-    return X.drop(columns=RAIN_COLUMNS) if kind == "hgb_terrain" else X
+    if kind == "hgb_terrain":
+        return X.drop(columns=RAIN_COLUMNS)
+    if kind == "hgb_rain":
+        return X[RAIN_ONLY]
+    if kind == "hgb_inter":
+        return X.assign(**{name: X[a] * X[b] for name, (a, b) in INTERACTIONS.items()})
+    return X
 
 
 HGB_DEFAULTS = {"max_iter": 300, "learning_rate": 0.05, "max_leaf_nodes": 15, "min_samples_leaf": 40,
@@ -35,12 +55,54 @@ HGB_DEFAULTS = {"max_iter": 300, "learning_rate": 0.05, "max_leaf_nodes": 15, "m
 
 
 def make_model(kind: str, columns, seed: int = 0, params: dict | None = None):
+    if kind == "hybrid":
+        return HybridModel(columns, seed, params)
     if kind == "logistic":
         return make_pipeline(StandardScaler(), LogisticRegression(C=0.5, max_iter=5000))
     return HistGradientBoostingClassifier(
         **{**HGB_DEFAULTS, **(params or {})}, early_stopping=False, random_state=seed,
         monotonic_cst=[MONOTONIC.get(c, 0) for c in columns],
     )
+
+
+class HybridModel:
+    """Two stages: terrain says where water gathers, rain says how much of that susceptibility is triggered.
+
+    Stage 1 is a terrain-only gradient boosting. Stage 2 is a logistic regression on the stage-1 logit,
+    the log of each rain input and their products, fitted on out-of-fold stage-1 scores so it does not
+    learn from scores that saw their own labels.
+    """
+
+    def __init__(self, columns, seed: int = 0, params: dict | None = None):
+        self.terrain_cols = [c for c in columns if c not in RAIN_COLUMNS]
+        self.rain_cols = [c for c in RAIN_ONLY if c in columns]
+        self.seed, self.params = seed, params
+
+    def _stage2(self, s, X):
+        z = _logit(s)
+        r = np.log1p(X[self.rain_cols].to_numpy(dtype=float))
+        return np.column_stack([z, r, z[:, None] * r])
+
+    def _terrain(self):
+        return make_model("hgb_terrain", self.terrain_cols, self.seed, self.params)
+
+    def fit(self, X, y, groups=None):
+        oof = np.zeros(len(y))
+        if groups is not None and len(set(groups)) > 1:
+            splits = GroupKFold(n_splits=min(3, len(set(groups)))).split(X, y, groups)
+        else:
+            splits = KFold(3, shuffle=True, random_state=self.seed).split(X)
+        for tr, va in splits:
+            m = self._terrain().fit(X.iloc[tr][self.terrain_cols], y[tr])
+            oof[va] = m.predict_proba(X.iloc[va][self.terrain_cols])[:, 1]
+        self.terrain = self._terrain().fit(X[self.terrain_cols], y)
+        self.combiner = make_pipeline(StandardScaler(), LogisticRegression(C=0.5, max_iter=5000)).fit(
+            self._stage2(oof, X), y)
+        return self
+
+    def predict_proba(self, X):
+        s = self.terrain.predict_proba(X[self.terrain_cols])[:, 1]
+        return self.combiner.predict_proba(self._stage2(s, X))
 
 
 class PlattCalibrator:
@@ -174,10 +236,12 @@ def fit(kind: str, df: pd.DataFrame, seed: int = 0, n_inner: int = 4, neg_sample
         X = features(kind, df)
         columns = list(X.columns)
         oof = np.zeros(len(y))
+        # The hybrid model splits its own training rows by event as well.
+        fit_kw = (lambda idx: {"groups": groups[idx]}) if kind == "hybrid" else (lambda idx: {})
         for tr, va in GroupKFold(n_splits=min(n_inner, len(set(groups)))).split(X, y, groups):
-            m = make_model(kind, columns, seed, params).fit(X.iloc[tr], y[tr])
+            m = make_model(kind, columns, seed, params).fit(X.iloc[tr], y[tr], **fit_kw(tr))
             oof[va] = m.predict_proba(X.iloc[va])[:, 1]
-        model = make_model(kind, columns, seed, params).fit(X, y)
+        model = make_model(kind, columns, seed, params).fit(X, y, **fit_kw(slice(None)))
     if y.sum() >= 150:
         calibrator = RankKeepingIsotonic().fit(oof, y)
     else:

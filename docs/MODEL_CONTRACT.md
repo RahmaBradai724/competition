@@ -94,10 +94,14 @@ Rank of the segment **inside its zone**, between 0 and 1:
 
 | Column | Unit | Definition |
 |---|---|---|
-| `trigger_rain_24h_mm` | mm | rain over the 24 h around the prediction time (rain already fallen + forecast), in the rain cell that contains the segment. The trigger takes the wettest segment of the zone. |
+| `trigger_rain_24h_mm` | mm | rain from `t − 12 h` to `t + 12 h` (12 h already fallen + 12 h forecast), `t` = prediction time, in the 0.1° rain cell that contains the segment. The same value for every segment of a cell. The trigger takes the wettest segment of the zone. |
 
 The rain already fallen comes from INM rain gauges, radar, or IMERG Early (about 4 h delay). The
 forecast part comes from ECMWF or AROME. Use a 0.1° grid (≈ 10 km) or finer.
+
+The threshold was calibrated on **calendar days** (00–24 UTC) of IMERG Final, not on this centred window, so the
+two do not match exactly. Use the centred window in operation, because it does not wait for midnight. Check the match
+during the Tunisian validation.
 
 ### 2.5 Columns used only for the confidence rules (section 7.3 of the specification)
 

@@ -2,7 +2,7 @@
   "column": "trigger_rain_24h_mm",
   "threshold_mm": 44.0,
   "status": "provisional",
-  "definition": "rain over the 24 h window around the prediction time (observed part + forecast part), at the wettest 0.1 degree cell of the zone",
+  "definition": "rain accumulated from t - 12 h to t + 12 h (12 h already fallen + 12 h forecast), where t is the prediction time, at the wettest 0.1 degree cell of the zone (predict.py takes the max of the column over the zone's segments)",
   "source_used_for_fit": "NASA GPM IMERG Final daily (gauge-corrected)",
   "validation": {
     "method": "leave-one-event-out over 13 Copernicus EMS flash floods (28 zones); threshold = highest value catching 90 % of the other events' flood zones",
@@ -14,5 +14,6 @@
     "13 events only, one Tunisian",
     "fitted on IMERG Final; IMERG Early, radar or INM gauges give different values: re-check on Tunisian gauge records before production",
     "dry spells are 'no mapped flood', not 'no flood'"
-  ]
+  ],
+  "calibration_window": "calendar days 00-24 UTC (IMERG Final daily), not the centred window used in operation; the two differ when a storm straddles midnight: to be checked during the Tunisian validation"
 }

@@ -1,0 +1,18 @@
+{
+  "column": "trigger_rain_24h_mm",
+  "threshold_mm": 44.0,
+  "status": "provisional",
+  "definition": "rain over the 24 h window around the prediction time (observed part + forecast part), at the wettest 0.1 degree cell of the zone",
+  "source_used_for_fit": "NASA GPM IMERG Final daily (gauge-corrected)",
+  "validation": {
+    "method": "leave-one-event-out over 13 Copernicus EMS flash floods (28 zones); threshold = highest value catching 90 % of the other events' flood zones",
+    "flood_zones_caught": "25/28 (missed: western Attica 2019 x2 at 28-30 mm, one Sicily 2021 zone at 43.9 mm)",
+    "dry_spells_triggered": "5/126 wet spells without a Copernicus activation in the 120 days before each flood; at least one (Heraklion, 20 Oct 2020) is a documented but unmapped flood",
+    "false_triggers_per_zone_per_year": 0.65
+  },
+  "limits": [
+    "13 events only, one Tunisian",
+    "fitted on IMERG Final; IMERG Early, radar or INM gauges give different values: re-check on Tunisian gauge records before production",
+    "dry spells are 'no mapped flood', not 'no flood'"
+  ]
+}

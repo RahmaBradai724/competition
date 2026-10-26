@@ -126,8 +126,25 @@ def trigger_status(route: pd.DataFrame, area: pd.DataFrame | None, trigger: dict
     return ids.map(lambda a: "on" if wettest.get(a, 0) >= trigger["threshold_mm"] else "off")
 
 
+def fill_unused(bundle, df: pd.DataFrame | None) -> pd.DataFrame | None:
+    """Raw columns the model does not use may be absent (e.g. rain for the terrain model): fill them with 0."""
+    if df is None:
+        return None
+    missing = [c for c in RAW_FEATURES if c not in df.columns]
+    used = [c for c in missing if c in bundle.columns]
+    if used:
+        raise ValueError(f"inputs missing columns the model uses: {used}")
+    return df.assign(**{c: 0.0 for c in missing})
+
+
 def score_route(bundle, route: pd.DataFrame, data_time: str, area: pd.DataFrame | None = None,
                 trigger: dict | None = None) -> pd.DataFrame:
+    trig_cols = [trigger["column"]] if trigger else []
+    route, area = fill_unused(bundle, route), fill_unused(bundle, area)
+    for df in [d for d in (route, area) if d is not None]:
+        missing = [c for c in trig_cols if c not in df.columns]
+        if missing:
+            raise ValueError(f"rain trigger column missing: {missing}")
     p = bundle.predict_proba(route)
     thresholds = route_thresholds(bundle, route, area)
     known = [c for c in RAW_FEATURES + HISTORY_FEATURES if c in route.columns]

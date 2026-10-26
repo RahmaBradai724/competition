@@ -1,16 +1,32 @@
 # Model contract: V2 flood-risk model ↔ PostGIS / application
 
 This file lists what the application must send to the V2 model, what the model sends back,
-and how to build each input in PostGIS. Code: `flood_risk/predict.py`. Model file:
-`models/med_imerg_tuned/v2_hgb.joblib`, a gradient-boosting model trained on 13 Mediterranean
-flash floods with GPM IMERG rain.
+and how to build each input in PostGIS. Code: `flood_risk/predict.py`.
 
-**What the model does, and what it does not do (yet).** The model ranks road segments by their risk of
-flooding **during a given rain event**. It was trained on flood maps drawn after each event, which say
-*whether* a road flooded but not *when*. So it has **not** been shown to predict a flood 20 minutes ahead;
-the "lead time" tests only measure how the ranking degrades when the rain forecast is wrong. Training used
-IMERG Final rain (gauge-corrected, published about 3.5 months later); in operation the inputs will come from
-faster, less accurate sources (IMERG Early, radar, INM gauges).
+## 0. What the model is
+
+The service has **two independent parts**:
+
+| Part | File | Question it answers | Status |
+|---|---|---|---|
+| **Terrain model** | `models/final/v2_terrain.joblib` | *Where* in a zone do roads flood first? It ranks road segments by flood susceptibility from terrain only. | validated (section 6) |
+| **Rain trigger** | `models/final/trigger.json` | *When* should that ranking become an alert? It fires when a zone's 24 h rain reaches 44 mm. | **provisional** |
+
+| Terrain rank | Rain trigger | Result for the user |
+|---|---|---|
+| high | off | no active alert; the road is shown as exposed (`susceptibility`) |
+| high | on | **alert**: `level` = Moderate / High / Very high |
+| low | on | rain watch for the zone; this road stays Low |
+
+**What it does not do.** Training used flood maps drawn days after each event, which say *whether* a
+road flooded, not *when*. The model ranks roads for a rain event. It has **not** been shown to
+predict a flood 20 minutes ahead.
+
+**Why terrain only.** Rain variables (NASA IMERG, about 10 km) were rebuilt with only what is known at
+each prediction time. Once that was done, they did not improve the ranking of roads inside a zone:
+no significant difference on 13 floods, and worse transfer to a country left out of training.
+See `pipeline_v2_temporel.ipynb`. Rain still matters, but it works at the zone scale. That is the
+trigger's job.
 
 ## 1. How the model is called
 
@@ -18,29 +34,26 @@ Each forecast run needs **two tables** with the same columns (section 2):
 
 | Table | Rows | Why |
 |---|---|---|
-| `area` | **every** road segment of the zone(s) the route crosses | levels are a budget per zone: the riskiest 2 % of each zone are High |
+| `area` | **every** road segment of the zone(s) the route crosses | levels are a budget per zone (the riskiest 2 % of each zone are High), and the trigger looks at the wettest part of the zone |
 | `route` | the segments of the requested route, each one at its own ETA | what the user sees |
 
-Scoring only the route segments is not enough. The route has too few segments to rank,
-and the thresholds change with every forecast.
-
 ```python
-import joblib
+import json, joblib
 from flood_risk.predict import score_route
 
-bundle = joblib.load("models/med_imerg_tuned/v2_hgb.joblib")
-result = score_route(bundle, route_df, data_time="2026-10-23T14:00Z", area=area_df)
+bundle = joblib.load("models/final/v2_terrain.joblib")
+trigger = json.load(open("models/final/trigger.json"))
+result = score_route(bundle, route_df, data_time="2026-10-23T14:00Z", area=area_df, trigger=trigger)
 ```
 
 The same call from the command line:
 
 ```
-python -m flood_risk.predict --model models/med_imerg_tuned/v2_hgb.joblib --route route.csv --area area.csv
+python -m flood_risk.predict --model models/final/v2_terrain.joblib --route route.csv --area area.csv
 ```
 
-If `area` is missing, the model falls back to fixed probability thresholds and prints a warning.
-Do not use that mode in production: a region with frequent floods would be almost all High, and
-a region with rare floods almost all Low.
+`--trigger` defaults to `models/final/trigger.json`. If that file is absent, every `level` stays
+`Low` and only `susceptibility` is filled.
 
 ## 2. Input columns (one row per segment)
 
@@ -52,10 +65,10 @@ unless the table says so.
 | Column | Type | Content |
 |---|---|---|
 | `segment_id` | text | unique id of the road segment (e.g. `<osm_way_id>_<index>`) |
-| `aoi` | text | zone id; levels are ranked inside each `aoi` (optional if only one zone is served) |
+| `aoi` | text | zone id; levels and the trigger work per `aoi` (optional if only one zone is served) |
 | `eta_min` | float | minutes from departure to the segment (`route` only) |
 
-### 2.2 Static columns: computed once per segment, stored in PostGIS
+### 2.2 Terrain columns: computed once per segment, stored in PostGIS (used by the model)
 
 | Column | Unit | Definition |
 |---|---|---|
@@ -64,14 +77,10 @@ unless the table says so.
 | `twi` | – | topographic wetness index ln(upslope area / slope), from D8 flow accumulation |
 | `depression_depth_m` | m | depth of the filled sink under the segment (max within ~75 m), 0 if none |
 | `dist_wadi_m` | m | distance from the midpoint to the nearest waterway (OSM `waterway=*`), capped at 5000 |
-| `impervious_frac` | 0–1 | share of built-up pixels (ESA WorldCover class 50) within ~100 m |
-| `drain_inlet_density` | per km | OSM storm drains within 50 m, divided by segment length, capped at 60 |
 | `underpass` | 0/1 | OSM tunnel, underpass or road below a bridge |
 | `ford` | 0/1 | OSM `ford=yes` |
-| `osm_completeness` | 0–1 | how well the area is mapped in OSM; use 0.5 when unknown |
-| `black_spot_count` | count | documented past floods on the segment; 0 when none |
 
-### 2.3 Percentile columns: recomputed when the set of segments of a zone changes
+### 2.3 Percentile columns: recomputed when the set of segments of a zone changes (used by the model)
 
 Rank of the segment **inside its zone**, between 0 and 1:
 
@@ -80,49 +89,42 @@ Rank of the segment **inside its zone**, between 0 and 1:
 | `elevation_rel_pct` | `elevation_rel_m` |
 | `dist_wadi_pct` | `dist_wadi_m` |
 | `twi_pct` | `twi` |
-| `impervious_pct` | `impervious_frac` |
 
-### 2.4 Rain columns: one value per segment and forecast run
-
-Each value is taken in the rain cell that contains the segment, around the segment's **ETA**
-(`t` = the hour of arrival). Rain is in mm, hourly totals.
+### 2.4 Rain trigger column: one value per zone and forecast run
 
 | Column | Unit | Definition |
 |---|---|---|
-| `rain_eta_mmh` | mm/h | rain intensity during the hour of arrival (forecast) |
-| `rain_1h_mm` | mm | rain in the hour before `t` |
-| `rain_3h_mm` | mm | rain from `t − 3 h` to `t − 1 h` |
-| `rain_24h_mm` | mm | rain from `t − 24 h` to `t − 1 h`; **the most important input of the model** |
-| `dry_spell_days` | days | days since the last day with ≥ 5 mm before the current storm; 60 if none in the archive |
-| `rain_interpolated` | 0/1 | 1 if the 15-min value was interpolated from an hourly forecast |
-| `data_age_min` | min | age of the rain data when the route is scored |
+| `trigger_rain_24h_mm` | mm | rain over the 24 h around the prediction time (rain already fallen + forecast), in the rain cell that contains the segment. The trigger takes the wettest segment of the zone. |
 
-Training used **IMERG Final**: a 0.1° grid (about 10 km), every 30 min. In operation, rain
-already fallen can come from IMERG Early or Late (available about 4 h or 14 h after the rain),
-or from INM rain gauges. Future hours come from a weather forecast (ECMWF or AROME).
-Use the same 0.1° grid, or finer.
+The rain already fallen comes from INM rain gauges, radar, or IMERG Early (about 4 h delay). The
+forecast part comes from ECMWF or AROME. Use a 0.1° grid (≈ 10 km) or finer.
 
-### 2.5 Optional history columns
+### 2.5 Columns used only for the confidence rules (section 7.3 of the specification)
 
-`flood_reports_250m`, `flood_reports_365d` and `basin_reports_prior` are counts of user
-reports (FR-21) near the segment. If the columns are absent, the model reads them as 0.
+`impervious_frac` (built-up share within 100 m, ESA WorldCover), `osm_completeness` (0.5 when unknown),
+`black_spot_count` (0 when none), `rain_interpolated` (0/1), `data_age_min` (minutes).
+
+Rain columns of earlier versions (`rain_eta_mmh`, `rain_1h_mm`, …) are no longer needed. If they are
+absent, the terrain model fills them with 0.
 
 ## 3. Output (one row per route segment)
 
 | Column | Content | Show to the user? |
 |---|---|---|
 | `segment_id`, `eta_min` | copied from the input | – |
-| `level` | `Low`, `Moderate` (top 10 % of the zone), `High` (top 2 %), `Very high` (top 0.5 %) | **yes, main output** |
+| `level` | the **alert**: `Low` while the trigger is off; otherwise `Moderate` (top 10 % of the zone), `High` (top 2 %), `Very high` (top 0.5 %) | **yes, main output** |
+| `susceptibility` | the same ranking whatever the weather: how exposed the road is | yes, as "exposed road", never as an alert |
+| `rain_trigger` | `on`, `off`, or `not validated` (no trigger file) | yes |
 | `risk_score` | 0–100, anchored on the levels: 25 = Moderate, 50 = High, 75 = Very high | yes |
-| `flood_prob_pct` | calibrated probability (%) | **no**, see section 5 |
-| `confidence`, `confidence_level` | 0.1–1 and `High` / `Medium` / `Low`, from data quality rules (section 7.3) | yes |
+| `flood_prob_pct` | model probability (%) | **no**, see section 5 |
+| `confidence`, `confidence_level` | 0.1–1 and `High` / `Medium` / `Low`, from data-quality rules | yes |
 | `confidence_notes` | reasons for lower confidence | on demand |
-| `main_factors` | up to 3 factor groups that raise the risk the most, e.g. `depression / low point (+31)` | yes |
+| `main_factors` | up to 3 factor groups that raise the risk the most, e.g. `depression / low point (+34)` | yes |
 | `data_timestamp` | time of the rain data used | yes |
 
 ## 4. Building the inputs in PostGIS
 
-The Python builders already compute every static column. The easiest path is to run them once
+The Python builders already compute every terrain column. The easiest path is to run them once
 per zone and load the result into PostGIS:
 
 ```python
@@ -146,11 +148,7 @@ UPDATE segments s SET dist_wadi_m = LEAST(5000, (
   SELECT ST_Distance(ST_LineInterpolatePoint(s.geom, 0.5), w.geom)
   FROM waterways w ORDER BY w.geom <-> ST_LineInterpolatePoint(s.geom, 0.5) LIMIT 1));
 
--- storm drains within 50 m, per km of road
-UPDATE segments s SET drain_inlet_density = LEAST(60, (
-  SELECT COUNT(*) FROM drains d WHERE ST_DWithin(d.geom, s.geom, 50)) / (ST_Length(s.geom) / 1000));
-
--- terrain layers stored as rasters (elevation_rel, slope, twi, depression, built-up share)
+-- terrain layers stored as rasters (elevation_rel, slope, twi, depression)
 UPDATE segments s SET elevation_rel_m = ST_Value(r.rast, ST_LineInterpolatePoint(s.geom, 0.5))
 FROM elevation_rel r WHERE ST_Intersects(r.rast, ST_LineInterpolatePoint(s.geom, 0.5));
 
@@ -160,42 +158,69 @@ FROM (SELECT segment_id, CUME_DIST() OVER (PARTITION BY aoi ORDER BY elevation_r
       FROM segments) p
 WHERE p.segment_id = s.segment_id;
 
--- rain: the 0.1° cell that contains each segment (segment_rain is filled by the rain job)
-SELECT s.segment_id, r.rain_eta_mmh, r.rain_1h_mm, r.rain_3h_mm, r.rain_24h_mm
+-- trigger rain: the 0.1° cell that contains each segment (rain_cells is filled by the rain job)
+SELECT s.segment_id, s.aoi, r.rain_24h_mm AS trigger_rain_24h_mm
 FROM segments s
 JOIN rain_cells r
   ON r.cell_x = FLOOR((ST_X(ST_Transform(ST_LineInterpolatePoint(s.geom, 0.5), 4326)) + 180) / 0.1)
  AND r.cell_y = FLOOR((ST_Y(ST_Transform(ST_LineInterpolatePoint(s.geom, 0.5), 4326)) + 90) / 0.1)
-WHERE r.valid_hour = :eta_hour;
+WHERE r.valid_time = :prediction_time;
 ```
 
 Notes:
 
-- `elevation_rel_m`, `twi` and `depression_depth_m` need flow routing on the DEM. PostGIS does
-  not do this, so compute the rasters with `flood_risk/real/terrain.py` (`terrain_layers`) and
-  import them with `raster2pgsql`.
+- `elevation_rel_m`, `twi` and `depression_depth_m` need flow routing on the DEM, which PostGIS
+  does not do. Compute the rasters with `flood_risk/real/terrain.py` (`terrain_layers`) and import
+  them with `raster2pgsql`.
 - `CUME_DIST` and the pandas rank used in training differ only on tied values.
-- Suggested tables:
-  - `segments`: static and percentile columns, plus geometry;
-  - `rain_cells`: one row per cell × hour;
-  - `reports`: FR-21 user reports, for the history columns.
+- The terrain columns never change with the weather. **The ranking of a zone can be computed once
+  and stored.** Only the trigger needs to be recomputed at each forecast run.
 
 ## 5. Rules for the application
 
-1. **Show `level` and `risk_score`, not `flood_prob_pct`.** The probability is calibrated on
-   average over all training floods, so it varies little inside one zone (e.g. about 10 % on
-   every Nabeul segment). The level is computed from the ranking, and it is reliable.
-2. **Score the whole zone for every forecast run**, then read the route segments from it. One
-   run over a zone of 30 000 segments takes a few seconds.
-3. **Rain must be taken at each segment's ETA**, not at departure time.
+1. **Show `level`, `susceptibility` and `risk_score`, not `flood_prob_pct`.** The probabilities do
+   not beat a constant forecast (Brier skill score ≈ 0). The ranking is what is reliable.
+2. **Never present `susceptibility` as an alert.** It says "this road floods early when it rains
+   hard", not "this road will flood now".
+3. **Score the whole zone**, then read the route segments from it. One run over 30 000 segments
+   takes a few seconds.
 4. **Always show the disclaimer.** The risk is a possibility, not a certainty, and it does not
-   replace official warnings.
-5. Validated performance on 13 floods the model never saw:
-   - ROC-AUC 0.74 (V1: 0.58);
-   - High alerts are right 26 % of the time, against about 11 % for random alerts;
-   - Nabeul 2018: ROC-AUC 0.81, with 35 % of flooded segments caught at High while 2 % of the
-     roads are alerted.
+   replace official warnings (INM, civil protection).
+5. **Changing the alert budget** (`schema.ALERT_SHARE`: 10 / 2 / 0.5 %) or the trigger threshold
+   (`trigger.json`) does not require retraining.
 
-   Details are in `pipeline_v2.ipynb`.
-6. **Changing the alert budget** (`schema.ALERT_SHARE`: 10 / 2 / 0.5 %) does not require
-   retraining.
+## 6. Validated performance
+
+### Terrain model
+
+The test labels count only roads that the satellite actually observed. Each test fold is never
+seen during training. Alerts are set to High for 2 % of each zone.
+
+| Validation | ROC-AUC | PR-AUC | Recall at High | Precision at High | False alarms |
+|---|---|---|---|---|---|
+| 13 floods, one left out at a time | 0.74 (V1: 0.56) | 0.26 (V1: 0.15) | 11.5 % (V1: 2.8 %) | 32 % (V1: 17 %) | 68 % |
+| 6 countries, one left out at a time | 0.76 | 0.27 | 17 % | 33 % | 67 % |
+| Nabeul 2018 (Tunisia left out) | 0.79 | – | 33 % | – | – |
+
+Recall is limited by the budget. When a flood covers more than 2 % of a zone, even a perfect
+ranking cannot alert on all of it. Raising the budget to 10 % brings recall to about 35 %.
+The model fails on urban torrent floods (Mandra 2017, Derna 2023).
+
+### Rain trigger (provisional)
+
+The trigger was tested on 28 zones. For each zone, the test compared the mapped flood with
+126 other rain spells from the 120 days before it. Those other spells had no Copernicus
+activation. The threshold was set leave-one-event-out.
+
+| Threshold | Flood zones triggered | Rain spells triggered without a mapped flood | Triggers per zone per year without a mapped flood |
+|---|---|---|---|
+| **44 mm / 24 h** | **25 / 28** | **5 / 126** | **≈ 0.65** |
+
+At least one of those 5 "false" triggers was a real flood that Copernicus did not map: Heraklion, 20 October 2020.
+Details are in `reports/med_trigger/README.md`.
+
+**Before production, two checks remain:**
+
+- The threshold was fitted on IMERG Final, which is published months later. It must be re-checked
+  against the rain source used in operation (INM gauges, radar or IMERG Early), on Tunisian records.
+- It must be tested on independent rain events, especially events without floods.

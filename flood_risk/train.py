@@ -38,7 +38,10 @@ LEVEL_PROTOCOL = {
 NAMES = {"v1": "V1 multi-criteria", "v1_relative": "Relative susceptibility", "logistic": "V2 logistic",
          "hgb": "V2 gradient boosting", "hgb_no_drainage": "V2 GB without drainage proxies",
          "hgb_terrain": "V2 GB terrain only", "hgb_rain": "V2 GB rain only",
-         "hgb_inter": "V2 GB + rain x terrain products", "hybrid": "V2 hybrid (terrain, then rain)"}
+         "hgb_inter": "V2 GB + rain x terrain products", "hybrid": "V2 hybrid (terrain, then rain)",
+         "A_terrain": "A terrain", "B_rain": "B rain (observed + forecast)", "C_terrain_rain": "C terrain + rain",
+         "D_terrain_rain_impervious": "D terrain + rain + built-up", "D_observed_only": "D without forecast (observed rain only)",
+         "E_full": "E full (with drainage proxies)", "E_no_drainage": "E full without drainage proxies"}
 
 
 def with_forecast_error(df: pd.DataFrame, lead_min, rng) -> pd.DataFrame:
@@ -131,6 +134,31 @@ def cross_validate(df: pd.DataFrame, n_folds: int, seed: int, neg_sample: float 
                 if lead == MAIN_LEAD:
                     oof[kind][te] = p
         print(f"fold {fold + 1}/{n_folds} done ({df.iloc[te]['event_id'].nunique()} test events)")
+    return pd.DataFrame(rows), oof
+
+
+def cross_validate_times(df: pd.DataFrame, kinds, group_col: str = "event_id", seed: int = 0,
+                         neg_sample: float = 0.15, params: dict | None = None):
+    """Grouped cross-validation on prediction-time rows (flood_risk/real/temporal.py).
+
+    Rain is already what was known at each prediction time, so no forecast error is added here.
+    Levels are an alert budget inside each area *at each prediction time*. Returns one row of
+    metrics per test group x model x prediction time, and the out-of-fold probabilities.
+    """
+    rows, oof = [], {k: np.zeros(len(df)) for k in kinds}
+    groups = df[group_col].to_numpy()
+    for fold, (tr, te) in enumerate(GroupKFold(n_splits=len(set(groups))).split(df, df[LABEL], groups)):
+        train, test = df.iloc[tr], df.iloc[te]
+        base_rate = float(train[LABEL].mean())
+        for kind in kinds:
+            b = v2.fit(kind, train, seed, neg_sample=neg_sample, params=params, levels="area")
+            p = b.predict_proba(test)
+            oof[kind][te] = p
+            for off, idx in test.groupby("offset_h").indices.items():
+                lv = v2.levels_by_share(p[idx], test["aoi"].to_numpy()[idx])
+                rows.append({"fold": fold, "group": str(groups[te][0]), "model": kind, "offset_h": off,
+                             **metrics(p[idx], lv, test[LABEL].to_numpy()[idx], base_rate)})
+        print(f"fold {fold + 1}: {groups[te][0]} done", flush=True)
     return pd.DataFrame(rows), oof
 
 

@@ -52,6 +52,7 @@ MONOTONIC = {
     # v2.INTERACTIONS: more rain on a more exposed segment can only raise the risk; rain x elevation
     # mixes a rising and a falling factor, so it stays free.
     "rain1h_x_impervious": 1, "rain24h_x_depression": 1, "rain1h_x_twi": 1, "rain3h_x_elevation": 0,
+    "rain_event_mm": 1, "rain_next_6h_mm": 1,
 }
 
 # Groups of raw columns shown to the user as "main contributing factors" (FR-13).

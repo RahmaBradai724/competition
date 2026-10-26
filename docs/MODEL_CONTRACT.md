@@ -5,6 +5,13 @@ and how to build each input in PostGIS. Code: `flood_risk/predict.py`. Model fil
 `models/med_imerg_tuned/v2_hgb.joblib`, a gradient-boosting model trained on 13 Mediterranean
 flash floods with GPM IMERG rain.
 
+**What the model does, and what it does not do (yet).** The model ranks road segments by their risk of
+flooding **during a given rain event**. It was trained on flood maps drawn after each event, which say
+*whether* a road flooded but not *when*. So it has **not** been shown to predict a flood 20 minutes ahead;
+the "lead time" tests only measure how the ranking degrades when the rain forecast is wrong. Training used
+IMERG Final rain (gauge-corrected, published about 3.5 months later); in operation the inputs will come from
+faster, less accurate sources (IMERG Early, radar, INM gauges).
+
 ## 1. How the model is called
 
 Each forecast run needs **two tables** with the same columns (section 2):

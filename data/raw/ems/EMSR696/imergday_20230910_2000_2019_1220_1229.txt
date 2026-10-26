@@ -1,0 +1,22 @@
+Dataset: 3B-DAY.MS.MRG.3IMERG.20230910-S000000-E235959.V07B.nc4
+precipitation.lat, 32.05, 32.15, 32.25, 32.35, 32.45, 32.55, 32.65, 32.75, 32.85, 32.95
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=20.05], 53.225, 64.495, 52.955, 42.93, 42.725, 49.95, 50.23, 49.96, 51.23, 47.79
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=20.15], 62.965, 78.255, 86.375, 62.155, 52.56, 60.26, 69.025, 70.585, 69.38, 66.62
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=20.25], 74.475, 86.2, 111.31, 110.58, 72.25, 70.785, 80.495, 80.84, 84.295, 79.91
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=20.35], 83.93, 98.24, 129.15, 129.115, 125.065, 77.015, 96.295, 92.69, 91.3, 93.01
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=20.45], 88.59, 112.365, 148.315, 171.795, 162.14, 101.025, 116.705, 99.13, 102.875, 110.315
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=20.55], 101.97, 127.155, 144.07, 170.545, 182.44, 174.375, 115.695, 107.7, 117.11, 120.305
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=20.65], 110.805, 121.415, 131.125, 162.9, 200.045, 193.14, 121.615, 117.315, 125.27, 141.455
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=20.75], 130.845, 127.07, 128.655, 163.74, 209.995, 203.435, 211.245, 120.185, 133.85, 163.24
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=20.85], 127.605, 128.26, 138.775, 164.325, 199.06, 211.935, 222.615, 125.72, 148.53, 168.63
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=20.95], 126.78, 126.155, 132.195, 155.56, 179.33, 200.45, 225.65, 211.92, 161.64, 195.59
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=21.05], 111.25, 121.25, 122.17, 142.515, 187.09, 192.92, 209.59, 209.78, 138.53, 200.715
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=21.15], 98.595, 98.8, 121.1, 136.33, 172.545, 182.53, 194.575, 200.115, 136.15, 199.39
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=21.25], 93.895, 113.19, 132.25, 137.16, 186.51, 186.2, 192.36, 200.89, 142.875, 208.475
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=21.35], 85.605, 99.275, 132.825, 130.31, 158.655, 174.205, 183.76, 180.925, 199.77, 185.31
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=21.45], 68.8, 91, 118.19, 123.115, 152.84, 166.41, 180.615, 172.385, 196.21, 139.43
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=21.55], 76.115, 94.72, 98.65, 110.63, 122.83, 172.345, 172.41, 181.06, 173.61, 128.275
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=21.65], 68.2, 90.6, 105.285, 112.675, 134.145, 152.895, 161.165, 171.905, 172.09, 169.72
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=21.75], 62.075, 79.42, 101.355, 111.065, 116.76, 127.44, 149.945, 153.175, 152.97, 164.11
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=21.85], 49.14, 63.785, 79.59, 96.21, 98.25, 107.075, 129.5, 121.125, 123.165, 131.79
+precipitation.precipitation[precipitation.time=15953][precipitation.lon=21.95], 44.945, 61.85, 82.595, 87.59, 88.31, 94.905, 135.04, 162.11, 169.75, 160.315

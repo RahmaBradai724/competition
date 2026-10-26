@@ -84,6 +84,25 @@ def cell_features(series: pd.Series) -> dict:
             "storm_total_mm": series.sum(), "peak_time": t}
 
 
+def storm_window(code, ev: pd.DataFrame, geoms: dict, t0) -> tuple:
+    """(start, end, storm_start, lon, lat) of an event: the reanalysis storm of each area, 24 h before to 12 h after."""
+    lon, lat, windows = np.zeros(len(ev)), np.zeros(len(ev)), []
+    cache = raw_dir("ems", code)
+    for tag, idx in ev.groupby("aoi").indices.items():
+        g = geoms[tag]
+        crs = ems.utm_crs(g.centroid.x, g.centroid.y)
+        to_wgs = Transformer.from_crs(crs, "EPSG:4326", always_xy=True)
+        lon[idx], lat[idx] = to_wgs.transform(ev["x_km"].to_numpy()[idx] * 1000, ev["y_km"].to_numpy()[idx] * 1000)
+        # The storm found in the reanalysis gives the window; IMERG then finds each cell's own peak.
+        series = rain.hourly_rain(None, None, None, None, cache / f"rain_{tag.split('_', 1)[1]}.json")
+        storms = rain.storms(series, min_total=5.0)
+        near = storms[(storms.peak_time >= t0 - pd.Timedelta(days=10)) & (storms.peak_time <= t0 + pd.Timedelta(days=1))]
+        s = near.sort_values("total_mm").iloc[-1]
+        windows.append((s["start"], s["end"]))
+    storm_start = min(w[0] for w in windows)
+    return storm_start - pd.Timedelta(hours=24), max(w[1] for w in windows) + pd.Timedelta(hours=12), storm_start, lon, lat
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", default="data/inventory_med.csv.gz")
@@ -96,21 +115,7 @@ def main():
     for code, ev in inv.groupby("event_id", sort=False):
         cache = raw_dir("ems", code)
         geoms = {f"{code}_{it['aoi']}": it["geometry"] for it in ems.mapped_areas(code, cache)}
-        lon, lat, windows = np.zeros(len(ev)), np.zeros(len(ev)), []
-        for tag, idx in ev.groupby("aoi").indices.items():
-            g = geoms[tag]
-            crs = ems.utm_crs(g.centroid.x, g.centroid.y)
-            to_wgs = Transformer.from_crs(crs, "EPSG:4326", always_xy=True)
-            lon[idx], lat[idx] = to_wgs.transform(ev["x_km"].to_numpy()[idx] * 1000, ev["y_km"].to_numpy()[idx] * 1000)
-            # The storm found in the reanalysis gives the window; IMERG then finds each cell's own peak.
-            series = rain.hourly_rain(None, None, None, None, cache / f"rain_{tag.split('_', 1)[1]}.json")
-            storms = rain.storms(series, min_total=5.0)
-            t0 = times[code]
-            near = storms[(storms.peak_time >= t0 - pd.Timedelta(days=10)) & (storms.peak_time <= t0 + pd.Timedelta(days=1))]
-            s = near.sort_values("total_mm").iloc[-1]
-            windows.append((s["start"], s["end"]))
-        start = min(w[0] for w in windows) - pd.Timedelta(hours=24)
-        end = max(w[1] for w in windows) + pd.Timedelta(hours=12)
+        start, end, _, lon, lat = storm_window(code, ev, geoms, times[code])
         print(f"{code}: IMERG {start:%Y-%m-%d %H}h -> {end:%Y-%m-%d %H}h, {len(ev)} segments", flush=True)
         cells = event_rain(session, code, lon, lat, start, end, cache)
         feats = {k: cell_features(v) for k, v in cells.items()}

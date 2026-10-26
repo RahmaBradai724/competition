@@ -1,0 +1,22 @@
+Dataset: 3B-DAY.MS.MRG.3IMERG.20230604-S000000-E235959.V07B.nc4
+precipitation.lat, 32.05, 32.15, 32.25, 32.35, 32.45, 32.55, 32.65, 32.75, 32.85, 32.95
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=20.05], 0.07, 0.46, 0.88, 0.02, 0.085, 0.73, 0.815, 1.325, 0.77, 0.74
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=20.15], 0.115, 0.285, 0.37, 0, 0, 0.075, 1.45, 3.315, 3.31, 2.74
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=20.25], 0, 0, 0.005, 0, 0, 0, 1.53, 4.89, 10.375, 3.495
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=20.35], 0, 0, 0, 0.02, 0.175, 0.185, 1.8, 3.69, 4.855, 1.945
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=20.45], 0, 0, 0, 0, 0.075, 0.165, 0.785, 0.53, 1.22, 1.325
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=20.55], 0, 0, 0, 0.005, 0, 0.015, 0.18, 0.25, 0.48, 2.475
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=20.65], 0, 0, 0, 0.045, 0.03, 0, 0.155, 1.18, 2.475, 3.115
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=20.75], 0, 0, 0, 0, 0, 0, 0, 0.045, 1.945, 2.92
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=20.85], 0, 0, 0, 0, 0, 0, 0, 0, 0.51, 1.71
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=20.95], 0, 0, 0, 0, 0, 0, 0, 0, 0.71, 2.45
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=21.05], 0, 0, 0, 0, 0, 0, 0, 0.05, 0.505, 2.235
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=21.15], 0, 0, 0, 0, 0, 0, 0, 0.18, 0.43, 1.48
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=21.25], 0, 0, 0, 0, 0, 0, 0.015, 0.135, 0.65, 1.24
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=21.35], 0, 0, 0, 0.015, 0, 0, 0.02, 0.19, 0.73, 1.47
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=21.45], 0, 0, 0.005, 0.115, 0, 0.01, 0.13, 0.19, 0.6, 0.575
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=21.55], 0, 0, 0, 0.07, 0.005, 0.02, 0.26, 0.145, 0.425, 0.71
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=21.65], 0, 0, 0, 0.065, 0.02, 0.03, 0.33, 0.09, 0.415, 0.33
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=21.75], 0, 0, 0, 0.04, 0.04, 0.02, 0.195, 0.135, 0.3, 0.21
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=21.85], 0, 0, 0, 0.04, 0.045, 0.02, 0.14, 0.265, 0.21, 0.125
+precipitation.precipitation[precipitation.time=15855][precipitation.lon=21.95], 0, 0, 0, 0.005, 0.085, 0.075, 0.15, 0.375, 0.145, 0.13

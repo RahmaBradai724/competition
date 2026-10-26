@@ -14,7 +14,9 @@ it, the fixed probability thresholds stored in the model are used.
 """
 
 import argparse
+import json
 from datetime import datetime, timezone
+from pathlib import Path
 
 import joblib
 import numpy as np
@@ -104,7 +106,28 @@ def route_thresholds(bundle, route: pd.DataFrame, area: pd.DataFrame | None) -> 
     return [by_area[a] for a in ids]
 
 
-def score_route(bundle, route: pd.DataFrame, data_time: str, area: pd.DataFrame | None = None) -> pd.DataFrame:
+def load_trigger(path) -> dict | None:
+    """Rain trigger of a zone ({"column", "threshold_mm", ...}), or None while it has not been validated."""
+    path = Path(path)
+    return json.loads(path.read_text()) if path.exists() else None
+
+
+def trigger_status(route: pd.DataFrame, area: pd.DataFrame | None, trigger: dict | None) -> pd.Series:
+    """Per route segment: "on" when its zone's rain reaches the trigger, "off" below it, "not validated" without one.
+
+    The zone value is the wettest segment of the zone (the trigger watches the worst part of it).
+    """
+    if trigger is None:
+        return pd.Series("not validated", index=route.index)
+    src = area if area is not None else route
+    zone = src["aoi"] if "aoi" in src.columns else pd.Series("all", index=src.index)
+    wettest = src[trigger["column"]].groupby(zone).max()
+    ids = route["aoi"] if "aoi" in route.columns else pd.Series("all", index=route.index)
+    return ids.map(lambda a: "on" if wettest.get(a, 0) >= trigger["threshold_mm"] else "off")
+
+
+def score_route(bundle, route: pd.DataFrame, data_time: str, area: pd.DataFrame | None = None,
+                trigger: dict | None = None) -> pd.DataFrame:
     p = bundle.predict_proba(route)
     thresholds = route_thresholds(bundle, route, area)
     known = [c for c in RAW_FEATURES + HISTORY_FEATURES if c in route.columns]
@@ -117,6 +140,13 @@ def score_route(bundle, route: pd.DataFrame, data_time: str, area: pd.DataFrame 
         "flood_prob_pct": np.round(100 * p, 1),
         "level": [v2.to_level(np.array([pi]), t)[0] for pi, t in zip(p, thresholds)],
     }, index=route.index)
+    # Terrain models rank roads but do not see the weather: alert levels only apply once the zone's
+    # rain trigger is reached. Below it, or while no trigger is validated, the level says how exposed
+    # the road is (susceptibility) and is not an alert.
+    status = trigger_status(route, area, trigger) if not set(bundle.columns) & {"rain_eta_mmh", "rain_1h_mm"} else         pd.Series("rain in model", index=route.index)
+    out["susceptibility"] = out["level"]
+    out["rain_trigger"] = status
+    out.loc[status.isin(["off", "not validated"]), "level"] = "Low"
     out = out.join(confidence(route))
     out["main_factors"] = explain(bundle, route, reference)
     out["data_timestamp"] = data_time
@@ -144,6 +174,8 @@ def main():
     ap.add_argument("--area", help="every segment of the route's area(s) at the same forecast time, for budget levels")
     ap.add_argument("--demo", action="store_true")
     ap.add_argument("--alert-level", default="High")
+    ap.add_argument("--trigger", default="models/final/trigger.json",
+                    help="validated rain trigger of the zones; absent = terrain susceptibility only, no alert")
     args = ap.parse_args()
 
     bundle = joblib.load(args.model)
@@ -152,7 +184,10 @@ def main():
     if area is None and bundle.trained_on.get("levels") in ("area", "budget"):
         print("warning: model expects budget levels but no --area was given; using its fixed thresholds")
     now = datetime.now(timezone.utc).isoformat(timespec="minutes")
-    res = score_route(bundle, route, now, area)
+    trigger = load_trigger(args.trigger)
+    res = score_route(bundle, route, now, area, trigger)
+    if trigger is None and not set(bundle.columns) & {"rain_eta_mmh", "rain_1h_mm"}:
+        print("note: no validated rain trigger: levels stay Low, see the 'susceptibility' column")
 
     pd.set_option("display.width", 200, "display.max_colwidth", 70)
     mode = f"budget levels from {len(area)} area segments" if area is not None else f"thresholds {bundle.thresholds}"

@@ -1,0 +1,9 @@
+Dataset: 3B-DAY.MS.MRG.3IMERG.20220225-S000000-E235959.V07B.nc4
+precipitation.lat, 39.45, 39.55, 39.65, 39.75, 39.85, 39.95
+precipitation.precipitation[precipitation.time=15391][precipitation.lon=-0.85], 10.835, 14.935, 12.02, 10.82, 10.565, 10.67
+precipitation.precipitation[precipitation.time=15391][precipitation.lon=-0.75], 10.425, 13.47, 13.015, 12.775, 12.005, 11.905
+precipitation.precipitation[precipitation.time=15391][precipitation.lon=-0.65], 11.315, 13.855, 15.395, 13.875, 12.055, 10.055
+precipitation.precipitation[precipitation.time=15391][precipitation.lon=-0.55], 11.65, 13.87, 14.89, 14.325, 12.89, 8.815
+precipitation.precipitation[precipitation.time=15391][precipitation.lon=-0.45], 8.295, 12.79, 17.015, 16.735, 15.17, 10.245
+precipitation.precipitation[precipitation.time=15391][precipitation.lon=-0.35], 7.075, 12.08, 13.945, 16.19, 14.675, 10.865
+precipitation.precipitation[precipitation.time=15391][precipitation.lon=-0.25], 6.585, 9.655, 12.945, 11.95, 9.895, 9.755

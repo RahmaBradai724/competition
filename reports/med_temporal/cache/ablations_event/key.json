@@ -1,0 +1,1 @@
+{"code": "9b981d1477e4665d", "neg": 0.15, "params": {"learning_rate": 0.03, "max_features": 0.5, "max_leaf_nodes": 15, "min_samples_leaf": 40}, "rows": 1080855, "sets": ["A_terrain", "B_rain", "C_terrain_rain", "D_terrain_rain_impervious", "D_observed_only", "E_full", "E_no_drainage"]}

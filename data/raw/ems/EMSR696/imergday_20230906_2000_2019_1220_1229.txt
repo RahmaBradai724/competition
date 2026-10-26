@@ -1,0 +1,22 @@
+Dataset: 3B-DAY.MS.MRG.3IMERG.20230906-S000000-E235959.V07B.nc4
+precipitation.lat, 32.05, 32.15, 32.25, 32.35, 32.45, 32.55, 32.65, 32.75, 32.85, 32.95
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=20.05], 19.485, 8.26, 0.935, 0.645, 0, 0.81, 0, 0, 0.16, 1.06
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=20.15], 8.66, 1.88, 0, 0.78, 1.55, 0.845, 0, 0, 0, 0
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=20.25], 1.04, 1.595, 0, 5.005, 1.225, 0.845, 1.07, 0.17, 0, 0
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=20.35], 0.415, 0.715, 0, 0, 3.39, 0, 0, 0, 0, 0
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=20.45], 0, 0.395, 0, 0, 0.305, 3.17, 2.68, 0, 0, 3.07
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=20.55], 0, 0, 0, 0, 0, 0, 3.405, 0, 2.48, 4.34
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=20.65], 0, 0, 0, 0, 0, 0, 0, 0, 0, 4.1
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=20.75], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=20.85], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=20.95], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.18
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=21.05], 0, 0, 0, 0, 0, 0, 0, 0, 0.205, 0.23
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=21.15], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=21.25], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=21.35], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=21.45], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=21.55], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=21.65], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=21.75], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=21.85], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+precipitation.precipitation[precipitation.time=15949][precipitation.lon=21.95], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0

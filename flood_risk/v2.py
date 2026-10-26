@@ -39,7 +39,33 @@ INTERACTIONS = {
 }
 
 
+# Feature groups of the ablation on prediction-time data (flood_risk/real/temporal.py). Observed rain
+# uses only hours up to the prediction time; forecast rain is the (simulated) forecast of the next hours.
+TERRAIN = ["elevation_rel_m", "twi", "depression_depth_m", "log_slope", "log_dist_wadi", "elevation_rel_pct",
+           "dist_wadi_pct", "twi_pct", "underpass", "ford"]
+IMPERVIOUS = ["impervious_frac", "impervious_pct"]
+RAIN_OBSERVED = ["rain_1h_mm", "rain_3h_mm", "rain_24h_mm", "rain_event_mm", "dry_spell_days"]
+RAIN_FORECAST = ["rain_eta_mmh", "rain_next_6h_mm"]
+TEMPORAL_RAIN = ["rain_event_mm", "rain_next_6h_mm"]   # extra columns of the temporal inventory
+FEATURE_SETS = {
+    "A_terrain": TERRAIN,
+    "B_rain": RAIN_OBSERVED + RAIN_FORECAST,
+    "C_terrain_rain": TERRAIN + RAIN_OBSERVED + RAIN_FORECAST,
+    "D_terrain_rain_impervious": TERRAIN + RAIN_OBSERVED + RAIN_FORECAST + IMPERVIOUS,
+    "D_observed_only": TERRAIN + RAIN_OBSERVED + IMPERVIOUS,
+    "E_full": None,            # every engineered feature, drainage proxies included
+    "E_no_drainage": None,     # same without the drainage proxies
+}
+
+
 def features(kind: str, df: pd.DataFrame) -> pd.DataFrame:
+    if kind in FEATURE_SETS:
+        X = engineer(df, use_drainage=kind != "E_no_drainage")
+        for col in TEMPORAL_RAIN:
+            if col in df.columns:
+                X[col] = df[col].astype("float32")
+        cols = FEATURE_SETS[kind]
+        return X if cols is None else X[[c for c in cols if c in X.columns]]
     X = engineer(df, use_drainage=kind != "hgb_no_drainage")
     if kind == "hgb_terrain":
         return X.drop(columns=RAIN_COLUMNS)
@@ -234,6 +260,10 @@ def fit(kind: str, df: pd.DataFrame, seed: int = 0, n_inner: int = 4, neg_sample
         oof = v1.relative_susceptibility(df, "aoi" if "aoi" in df.columns else None) / 100
     else:
         X = features(kind, df)
+        # A column with a single value in the training rows (a placeholder such as osm_completeness = 0.5
+        # or absent report history) carries no information: leave it out and record which ones were dropped.
+        constant = [c for c in X.columns if X[c].nunique() <= 1]
+        X = X.drop(columns=constant)
         columns = list(X.columns)
         oof = np.zeros(len(y))
         # The hybrid model splits its own training rows by event as well.
@@ -257,5 +287,6 @@ def fit(kind: str, df: pd.DataFrame, seed: int = 0, n_inner: int = 4, neg_sample
     info = {"rows": len(df), "events": int(len(set(groups))), "positives": int(y.sum()),
             "trained_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             # Typical values used as the neutral point of explanations.
-            "reference": reference, "neg_sample": neg_sample, "params": params or {}, "levels": levels}
+            "reference": reference, "neg_sample": neg_sample, "params": params or {}, "levels": levels,
+            "dropped_constant": constant if kind not in REFERENCE_KINDS else []}
     return Bundle(kind, model, calibrator, thresholds, columns, info, neg_sample)

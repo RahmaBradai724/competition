@@ -1,0 +1,5 @@
+Dataset: 3B-DAY.MS.MRG.3IMERG.20180812-S000000-E235959.V07B.nc4
+precipitation.lat, 43.15, 43.25, 43.35
+precipitation.precipitation[precipitation.time=14098][precipitation.lon=3.05], 8.295, 17.28, 16.36
+precipitation.precipitation[precipitation.time=14098][precipitation.lon=3.15], 6.495, 12.31, 11.345
+precipitation.precipitation[precipitation.time=14098][precipitation.lon=3.25], 8.01, 11.19, 15.13

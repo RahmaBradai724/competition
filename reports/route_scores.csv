@@ -1,65 +1,65 @@
-segment_id,eta_min,risk_score,flood_prob_pct,level,confidence,confidence_level,confidence_notes,main_factors,data_timestamp
-178067717_16,0.0,25,9.7,Low,1.0,High,,none dominant,2026-10-24T10:23+00:00
-715727339_13,0.3,25,9.7,Low,1.0,High,,none dominant,2026-10-24T10:23+00:00
-23793679_51,0.6,25,9.7,Low,1.0,High,,"wadi proximity (+6), depression / low point (+2)",2026-10-24T10:23+00:00
-23793679_52,1.0,25,9.7,Low,1.0,High,,"wadi proximity (+11), depression / low point (+1)",2026-10-24T10:23+00:00
-178067779_0,1.3,25,9.7,Low,1.0,High,,wadi proximity (+6),2026-10-24T10:23+00:00
-178067779_4,1.6,25,9.7,Low,1.0,High,,none dominant,2026-10-24T10:23+00:00
-178067779_6,1.9,25,9.7,Low,1.0,High,,none dominant,2026-10-24T10:23+00:00
-178067779_7,2.2,25,9.7,Low,1.0,High,,none dominant,2026-10-24T10:23+00:00
-97039211_23,2.5,25,9.7,Low,1.0,High,,none dominant,2026-10-24T10:23+00:00
-1097310802_0,2.9,25,9.7,Low,1.0,High,,wadi proximity (+5),2026-10-24T10:23+00:00
-465755402_3,3.2,25,9.7,Low,1.0,High,,"wadi proximity (+3), depression / low point (+1)",2026-10-24T10:23+00:00
-703965672_2,3.5,25,9.7,Low,1.0,High,,depression / low point (+1),2026-10-24T10:23+00:00
-465755404_9,3.8,25,9.7,Low,1.0,High,,depression / low point (+1),2026-10-24T10:23+00:00
-699871869_6,4.1,25,9.7,Low,1.0,High,,"wadi proximity (+5), depression / low point (+1)",2026-10-24T10:23+00:00
-699871869_5,4.4,25,9.7,Low,1.0,High,,"wadi proximity (+9), depression / low point (+1)",2026-10-24T10:23+00:00
-699871869_2,4.8,25,9.7,Low,1.0,High,,"wadi proximity (+9), depression / low point (+1)",2026-10-24T10:23+00:00
-98887161_74,5.1,25,9.7,Low,1.0,High,,"wadi proximity (+3), depression / low point (+1)",2026-10-24T10:23+00:00
-699547487_2,5.4,25,9.7,Low,1.0,High,,depression / low point (+2),2026-10-24T10:23+00:00
-700175466_1,5.7,25,9.7,Low,1.0,High,,"wadi proximity (+3), depression / low point (+2)",2026-10-24T10:23+00:00
-700174149_1,6.0,29,9.7,Moderate,1.0,High,,"wadi proximity (+5), depression / low point (+3)",2026-10-24T10:23+00:00
-97039219_14,6.3,25,9.7,Low,1.0,High,,"wadi proximity (+11), depression / low point (+1)",2026-10-24T10:23+00:00
-699547487_14,6.7,72,9.7,High,1.0,High,,depression / low point (+34),2026-10-24T10:23+00:00
-699547487_17,7.0,25,9.7,Low,1.0,High,,depression / low point (+14),2026-10-24T10:23+00:00
-699547487_19,7.3,25,9.7,Low,1.0,High,,depression / low point (+7),2026-10-24T10:23+00:00
-699547487_22,7.6,25,9.7,Low,1.0,High,,"depression / low point (+2), wadi proximity (+2)",2026-10-24T10:23+00:00
-707046730_1,7.9,32,9.7,Moderate,1.0,High,,"wadi proximity (+13), depression / low point (+6)",2026-10-24T10:23+00:00
-824129971_6,8.3,25,9.7,Low,1.0,High,,"wadi proximity (+3), depression / low point (+3)",2026-10-24T10:23+00:00
-824129972_6,8.6,25,9.7,Low,1.0,High,,depression / low point (+3),2026-10-24T10:23+00:00
-824129973_3,8.9,25,9.7,Low,1.0,High,,depression / low point (+1),2026-10-24T10:23+00:00
-824129973_6,9.2,25,9.7,Low,1.0,High,,depression / low point (+1),2026-10-24T10:23+00:00
-208912099_21,9.5,25,9.7,Low,1.0,High,,depression / low point (+1),2026-10-24T10:23+00:00
-208912101_10,9.8,25,9.7,Low,1.0,High,,depression / low point (+1),2026-10-24T10:23+00:00
-208912092_2,10.2,25,9.7,Low,1.0,High,,depression / low point (+2),2026-10-24T10:23+00:00
-699426618_0,10.5,25,9.7,Low,1.0,High,,depression / low point (+1),2026-10-24T10:23+00:00
-208912119_20,10.8,25,9.7,Low,1.0,High,,depression / low point (+1),2026-10-24T10:23+00:00
-699426617_2,11.1,25,9.7,Low,1.0,High,,depression / low point (+1),2026-10-24T10:23+00:00
-703262261_2,11.4,25,9.7,Low,1.0,High,,"wadi proximity (+3), depression / low point (+1)",2026-10-24T10:23+00:00
-703262262_1,11.7,25,9.7,Low,1.0,High,,"wadi proximity (+3), depression / low point (+1)",2026-10-24T10:23+00:00
-208912120_2,12.1,25,9.7,Low,1.0,High,,"wadi proximity (+11), depression / low point (+1)",2026-10-24T10:23+00:00
-699351875_4,12.4,25,9.7,Low,1.0,High,,"wadi proximity (+3), depression / low point (+1)",2026-10-24T10:23+00:00
-97039461_0,12.7,25,9.7,Low,1.0,High,,depression / low point (+3),2026-10-24T10:23+00:00
-97039096_2,13.0,25,9.7,Low,0.9,High,"dense urban area, drain state unknown","depression / low point (+5), impervious surface (+2)",2026-10-24T10:23+00:00
-97039458_0,13.3,25,9.7,Low,0.9,High,"dense urban area, drain state unknown","depression / low point (+2), impervious surface (+2)",2026-10-24T10:23+00:00
-207216149_33,13.7,25,9.7,Low,0.9,High,"dense urban area, drain state unknown",depression / low point (+2),2026-10-24T10:23+00:00
-207294787_0,14.0,25,9.7,Low,1.0,High,,depression / low point (+1),2026-10-24T10:23+00:00
-701723014_4,14.3,25,9.7,Low,1.0,High,,depression / low point (+1),2026-10-24T10:23+00:00
-702501620_3,14.6,25,9.7,Low,1.0,High,,depression / low point (+1),2026-10-24T10:23+00:00
-701723018_3,14.9,25,9.7,Low,1.0,High,,depression / low point (+1),2026-10-24T10:23+00:00
-702501622_1,15.2,25,9.7,Low,1.0,High,,depression / low point (+1),2026-10-24T10:23+00:00
-701723017_6,15.6,25,9.7,Low,1.0,High,,depression / low point (+1),2026-10-24T10:23+00:00
-703817694_1,15.9,25,9.7,Low,1.0,High,,depression / low point (+1),2026-10-24T10:23+00:00
-703817694_3,16.2,25,9.7,Low,1.0,High,,depression / low point (+1),2026-10-24T10:23+00:00
-700983715_0,16.5,25,9.7,Low,1.0,High,,none dominant,2026-10-24T10:23+00:00
-207488212_1,16.8,25,9.7,Low,1.0,High,,none dominant,2026-10-24T10:23+00:00
-705534363_4,17.1,25,9.7,Low,1.0,High,,wadi proximity (+1),2026-10-24T10:23+00:00
-705534363_5,17.5,25,9.7,Low,1.0,High,,none dominant,2026-10-24T10:23+00:00
-705534363_7,17.8,25,9.7,Low,1.0,High,,none dominant,2026-10-24T10:23+00:00
-712022840_11,18.1,25,9.7,Low,1.0,High,,none dominant,2026-10-24T10:23+00:00
-712022840_10,18.4,25,9.7,Low,1.0,High,,none dominant,2026-10-24T10:23+00:00
-712022840_8,18.7,25,9.7,Low,1.0,High,,none dominant,2026-10-24T10:23+00:00
-713676120_0,19.0,25,9.7,Low,1.0,High,,none dominant,2026-10-24T10:23+00:00
-713676119_0,19.4,25,9.7,Low,1.0,High,,none dominant,2026-10-24T10:23+00:00
-713676119_1,19.7,25,9.7,Low,1.0,High,,none dominant,2026-10-24T10:23+00:00
-713676119_2,20.0,25,9.7,Low,1.0,High,,none dominant,2026-10-24T10:23+00:00
+segment_id,eta_min,risk_score,flood_prob_pct,level,susceptibility,rain_trigger,confidence,confidence_level,confidence_notes,main_factors,data_timestamp
+178067717_16,0.0,23,11.4,Low,Low,not validated,1.0,High,,none dominant,2026-10-26T20:41+00:00
+715727339_13,0.3,23,11.4,Low,Low,not validated,1.0,High,,none dominant,2026-10-26T20:41+00:00
+23793679_51,0.6,25,12.3,Low,Low,not validated,1.0,High,,"wadi proximity (+5), depression / low point (+4)",2026-10-26T20:41+00:00
+23793679_52,1.0,25,12.3,Low,Low,not validated,1.0,High,,"wadi proximity (+10), depression / low point (+1)",2026-10-26T20:41+00:00
+178067779_0,1.3,25,12.3,Low,Low,not validated,1.0,High,,wadi proximity (+5),2026-10-26T20:41+00:00
+178067779_4,1.6,23,11.4,Low,Low,not validated,1.0,High,,none dominant,2026-10-26T20:41+00:00
+178067779_6,1.9,23,11.4,Low,Low,not validated,1.0,High,,none dominant,2026-10-26T20:41+00:00
+178067779_7,2.2,23,11.4,Low,Low,not validated,1.0,High,,none dominant,2026-10-26T20:41+00:00
+97039211_23,2.5,23,11.4,Low,Low,not validated,1.0,High,,none dominant,2026-10-26T20:41+00:00
+1097310802_0,2.9,25,12.3,Low,Low,not validated,1.0,High,,wadi proximity (+6),2026-10-26T20:41+00:00
+465755402_3,3.2,25,12.3,Low,Low,not validated,1.0,High,,"depression / low point (+4), wadi proximity (+4)",2026-10-26T20:41+00:00
+703965672_2,3.5,25,12.3,Low,Low,not validated,1.0,High,,"depression / low point (+4), wadi proximity (+1)",2026-10-26T20:41+00:00
+465755404_9,3.8,25,12.3,Low,Low,not validated,1.0,High,,"depression / low point (+4), wadi proximity (+2)",2026-10-26T20:41+00:00
+699871869_6,4.1,25,12.3,Low,Low,not validated,1.0,High,,"wadi proximity (+5), depression / low point (+3)",2026-10-26T20:41+00:00
+699871869_5,4.4,25,12.3,Low,Moderate,not validated,1.0,High,,"wadi proximity (+11), depression / low point (+3)",2026-10-26T20:41+00:00
+699871869_2,4.8,25,12.3,Low,Moderate,not validated,1.0,High,,"wadi proximity (+11), depression / low point (+2)",2026-10-26T20:41+00:00
+98887161_74,5.1,25,12.3,Low,Low,not validated,1.0,High,,"depression / low point (+4), wadi proximity (+4)",2026-10-26T20:41+00:00
+699547487_2,5.4,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+4),2026-10-26T20:41+00:00
+700175466_1,5.7,25,12.3,Low,Low,not validated,1.0,High,,"wadi proximity (+4), depression / low point (+4)",2026-10-26T20:41+00:00
+700174149_1,6.0,25,12.3,Low,Moderate,not validated,1.0,High,,"wadi proximity (+6), depression / low point (+4)",2026-10-26T20:41+00:00
+97039219_14,6.3,25,12.3,Low,Moderate,not validated,1.0,High,,"wadi proximity (+13), depression / low point (+2)",2026-10-26T20:41+00:00
+699547487_14,6.7,70,42.5,Low,High,not validated,1.0,High,,depression / low point (+30),2026-10-26T20:41+00:00
+699547487_17,7.0,50,14.9,Low,Moderate,not validated,1.0,High,,depression / low point (+17),2026-10-26T20:41+00:00
+699547487_19,7.3,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+2),2026-10-26T20:41+00:00
+699547487_22,7.6,25,12.3,Low,Moderate,not validated,1.0,High,,"wadi proximity (+6), depression / low point (+4)",2026-10-26T20:41+00:00
+707046730_1,7.9,25,12.3,Low,Moderate,not validated,1.0,High,,"wadi proximity (+13), depression / low point (+3)",2026-10-26T20:41+00:00
+824129971_6,8.3,25,12.3,Low,Low,not validated,1.0,High,,"wadi proximity (+5), depression / low point (+4)",2026-10-26T20:41+00:00
+824129972_6,8.6,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+2),2026-10-26T20:41+00:00
+824129973_3,8.9,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+3),2026-10-26T20:41+00:00
+824129973_6,9.2,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+4),2026-10-26T20:41+00:00
+208912099_21,9.5,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+4),2026-10-26T20:41+00:00
+208912101_10,9.8,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+3),2026-10-26T20:41+00:00
+208912092_2,10.2,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+4),2026-10-26T20:41+00:00
+699426618_0,10.5,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+4),2026-10-26T20:41+00:00
+208912119_20,10.8,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+4),2026-10-26T20:41+00:00
+699426617_2,11.1,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+5),2026-10-26T20:41+00:00
+703262261_2,11.4,25,12.3,Low,Low,not validated,1.0,High,,"depression / low point (+4), wadi proximity (+4)",2026-10-26T20:41+00:00
+703262262_1,11.7,25,12.3,Low,Low,not validated,1.0,High,,"depression / low point (+4), wadi proximity (+4)",2026-10-26T20:41+00:00
+208912120_2,12.1,25,12.3,Low,Moderate,not validated,1.0,High,,"wadi proximity (+11), depression / low point (+3)",2026-10-26T20:41+00:00
+699351875_4,12.4,25,12.3,Low,Low,not validated,1.0,High,,"depression / low point (+4), wadi proximity (+4)",2026-10-26T20:41+00:00
+97039461_0,12.7,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+4),2026-10-26T20:41+00:00
+97039096_2,13.0,25,12.3,Low,Low,not validated,0.9,High,"dense urban area, drain state unknown",depression / low point (+7),2026-10-26T20:41+00:00
+97039458_0,13.3,25,12.3,Low,Low,not validated,0.9,High,"dense urban area, drain state unknown",depression / low point (+4),2026-10-26T20:41+00:00
+207216149_33,13.7,25,12.3,Low,Low,not validated,0.9,High,"dense urban area, drain state unknown",depression / low point (+4),2026-10-26T20:41+00:00
+207294787_0,14.0,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+4),2026-10-26T20:41+00:00
+701723014_4,14.3,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+5),2026-10-26T20:41+00:00
+702501620_3,14.6,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+5),2026-10-26T20:41+00:00
+701723018_3,14.9,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+7),2026-10-26T20:41+00:00
+702501622_1,15.2,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+4),2026-10-26T20:41+00:00
+701723017_6,15.6,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+4),2026-10-26T20:41+00:00
+703817694_1,15.9,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+5),2026-10-26T20:41+00:00
+703817694_3,16.2,25,12.3,Low,Low,not validated,1.0,High,,depression / low point (+5),2026-10-26T20:41+00:00
+700983715_0,16.5,23,11.4,Low,Low,not validated,1.0,High,,none dominant,2026-10-26T20:41+00:00
+207488212_1,16.8,23,11.4,Low,Low,not validated,1.0,High,,none dominant,2026-10-26T20:41+00:00
+705534363_4,17.1,23,11.4,Low,Low,not validated,1.0,High,,none dominant,2026-10-26T20:41+00:00
+705534363_5,17.5,23,11.4,Low,Low,not validated,1.0,High,,none dominant,2026-10-26T20:41+00:00
+705534363_7,17.8,23,11.4,Low,Low,not validated,1.0,High,,none dominant,2026-10-26T20:41+00:00
+712022840_11,18.1,23,11.4,Low,Low,not validated,1.0,High,,none dominant,2026-10-26T20:41+00:00
+712022840_10,18.4,23,11.4,Low,Low,not validated,1.0,High,,none dominant,2026-10-26T20:41+00:00
+712022840_8,18.7,23,11.4,Low,Low,not validated,1.0,High,,none dominant,2026-10-26T20:41+00:00
+713676120_0,19.0,23,11.4,Low,Low,not validated,1.0,High,,none dominant,2026-10-26T20:41+00:00
+713676119_0,19.4,23,11.4,Low,Low,not validated,1.0,High,,none dominant,2026-10-26T20:41+00:00
+713676119_1,19.7,23,11.4,Low,Low,not validated,1.0,High,,none dominant,2026-10-26T20:41+00:00
+713676119_2,20.0,23,11.4,Low,Low,not validated,1.0,High,,none dominant,2026-10-26T20:41+00:00

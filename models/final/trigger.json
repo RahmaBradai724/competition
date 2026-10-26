@@ -15,5 +15,5 @@
     "fitted on IMERG Final; IMERG Early, radar or INM gauges give different values: re-check on Tunisian gauge records before production",
     "dry spells are 'no mapped flood', not 'no flood'"
   ],
-  "calibration_window": "calendar days 00-24 UTC (IMERG Final daily), not the centred window used in operation; the two differ when a storm straddles midnight: to be checked during the Tunisian validation"
+  "calibration_window": "calendar days 00-24 UTC (IMERG Final daily). A calendar day is one of the 24 h windows, so the operational rolling window is always >= it. Measured on the 28 flood storms (reports/med_trigger/window_check.csv): median x1.03, up to x1.7 when a storm straddles midnight; flood zones reaching 44 mm go from 24 to 27/28. False triggers will rise too, by an amount the daily data cannot measure: check on Tunisian gauge records before production."
 }

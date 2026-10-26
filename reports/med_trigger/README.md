@@ -24,3 +24,16 @@ and year without a mapped flood. Missed: western Attica 2019 (28-30 mm/day in IM
 
 Limits: 13 events; IMERG Final (published months later) while operation will use IMERG Early, radar or
 INM gauges; a dry spell means "no mapped flood", not "no flood". Re-check on Tunisian gauge records.
+
+## Calendar day versus rolling 24 h window
+
+The threshold was fitted on calendar days (00-24 UTC). In operation, `predict.py` compares it with a rolling
+window from t - 12 h to t + 12 h. A calendar day is one of these 24 h windows, so the rolling value is
+**always at least as large**. On the 28 flood storms (`window_check.csv`, IMERG half-hourly):
+
+- the ratio is ×1.03 in median and up to ×1.7, when a storm straddles midnight (western Attica 2019, Sicily 2023, Aude);
+- flood zones above 44 mm go from 24 to **27 out of 28** (western Attica 2019 is now caught at 47.6 mm).
+
+The trigger therefore fires **earlier and more often** than in the study. The extra false triggers
+cannot be measured here, because dry spells were only downloaded as daily totals. That must be checked on
+Tunisian gauge records before production.

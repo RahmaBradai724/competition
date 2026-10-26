@@ -99,9 +99,11 @@ Rank of the segment **inside its zone**, between 0 and 1:
 The rain already fallen comes from INM rain gauges, radar, or IMERG Early (about 4 h delay). The
 forecast part comes from ECMWF or AROME. Use a 0.1° grid (≈ 10 km) or finer.
 
-The threshold was calibrated on **calendar days** (00–24 UTC) of IMERG Final, not on this centred window, so the
-two do not match exactly. Use the centred window in operation, because it does not wait for midnight. Check the match
-during the Tunisian validation.
+The threshold was calibrated on **calendar days** (00–24 UTC) of IMERG Final. The centred window used in
+operation is always at least as large: ×1.03 in median and up to ×1.7 when a storm straddles midnight
+(`reports/med_trigger/window_check.csv`). The trigger therefore fires earlier and catches 27 of the 28 flood zones
+instead of 25. It will also fire more often without a flood, and the daily data cannot measure how much more.
+Check this during the Tunisian validation.
 
 ### 2.5 Columns used only for the confidence rules (section 7.3 of the specification)
 

@@ -196,7 +196,9 @@ Notes:
 5. **Changing the alert budget** (`schema.ALERT_SHARE`: 10 / 2 / 0.5 %) or the trigger threshold
    (`trigger.json`) does not require retraining.
 
-## 6. Validated performance
+## 6. Measured performance
+
+The terrain model is validated as described below. The rain trigger is provisional: its results are tests, not an operational validation.
 
 ### Terrain model
 
@@ -226,8 +228,35 @@ activation. The threshold was set leave-one-event-out.
 At least one of those 5 "false" triggers was a real flood that Copernicus did not map: Heraklion, 20 October 2020.
 Details are in `reports/med_trigger/README.md`.
 
-**Before production, two checks remain:**
+### Rain trigger on Tunisian gauges (exploratory)
 
-- The threshold was fitted on IMERG Final, which is published months later. It must be re-checked
-  against the rain source used in operation (INM gauges, radar or IMERG Early), on Tunisian records.
-- It must be tested on independent rain events, especially events without floods.
+The 44 mm threshold was then run, **unchanged**, on Tunisian floods that it was not fitted on. The rain came from 8 INM synoptic gauges, 2014–2025, as archived by NOAA (WMO SYNOP messages). It was rebuilt on a 3-hour grid, partly from 6–24 h totals. Details and how to reproduce: `reports/tn_trigger_synop/README.md`.
+
+These results are **exploratory**. They do not validate 44 mm as an operational alert threshold.
+
+| Measure (44 mm, rolling 24 h) | Value | Unit |
+|---|---|---|
+| Floods caught | **7/14** = 50 % (Wilson 95 %: 27–73 %) | zone-dates from the press, excluding the event the threshold was fitted on |
+| Floods caught | **6/11** = 54.5 % (28–79 %) | event–station: zones that share a gauge on the same day count once |
+| Triggers without a listed flood | **135** | zone-episodes |
+| Triggers without a listed flood | **74** | station-episodes |
+| Groups of time-overlapping station-episodes | 50 | an algorithmic grouping, not 50 confirmed storms |
+
+How to read them:
+
+- Of the 11 events, 4 have **insufficient** time resolution around the flood (mostly 12 h totals or gaps). The threshold cannot be judged on them. On the 4 events with high resolution, 3 were caught.
+- 25 of the 74 station-episodes have a quality flag within their reach. A flag marks a total to review; it does not show that the total used is wrong. A manual review sorted them into categories:
+  - 12 possible unlisted floods (press reports of flooding nearby);
+  - 7 with unreliable rain data (totals contradicted by the same station);
+  - 6 unresolved.
+
+  These are **review categories, not confirmed ground truth**. Press reports do not prove that the station value is right, and contradictory totals do not show which one is wrong. No station-episode was confirmed as a false alarm, and none was removed.
+- The flood list comes from the press and is incomplete, so part of the triggers without a listed flood may be real floods.
+
+The earlier test with satellite rain on the same floods caught 5/14 (`reports/tn_trigger_imerg/README.md`). Satellite and gauge rain differ in both directions: the gauge reads 3–4 times more on the most intense urban storms, and less on wider ones. A threshold fitted on IMERG cannot simply be rescaled for gauges.
+
+**Before production, these checks remain:**
+
+- Validation on a denser gauge network (INM climatological, DGRE) with hourly data, and a flood list from the Civil Protection.
+- Any change of threshold must be chosen on one period and tested once on a held-out period (`docs/TRIGGER_VALIDATION.md`, section 5).
+- The real-time rain feed (delay, coverage, 12 h forecast) is not tested.

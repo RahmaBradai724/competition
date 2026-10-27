@@ -1,0 +1,14 @@
+zone,station,name,lat,lon,km_to_zone
+tunis,60715099999,Tunis-Carthage,36.851,10.227,6
+ariana,60715099999,Tunis-Carthage,36.851,10.227,3
+ben_arous,60715099999,Tunis-Carthage,36.851,10.227,11
+bizerte,60714099999,Sidi Ahmed (Bizerte),37.245,9.791,8
+nabeul,60728099999,Nabeul,36.467,10.700,4
+hammamet,60728099999,Nabeul,36.467,10.700,10
+zaghouan,60729099999,Zaghouan Magrane,36.433,10.083,6
+kairouan,60735099999,Kairouan,35.667,10.100,1
+monastir,60740099999,Monastir-Skanes,35.667,10.750,13
+moknine,60740099999,Monastir-Skanes,35.667,10.750,14
+sousse,60740099999,Monastir-Skanes,35.667,10.750,20
+mahdia,60742099999,Mahdia,35.500,11.067,1
+sfax,60750099999,Thyna (Sfax),34.718,10.691,7

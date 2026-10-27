@@ -1,0 +1,24 @@
+zone,date,confidence,in_calibration,source,description,matched
+sousse,2016-09-23,high,0,https://africanmanager.com/13_tunisie-des-routes-et-des-quartiers-a-sousse-inondes-apres-de-fortes-pluies-photo/,roads and districts of Sousse flooded,True
+sousse,2016-09-29,high,0,https://www.webdo.tn/fr/actualite/national/sud-nord-tunisie-eaux/162277/,worst flooding at Sousse and Sfax; crisis cell for Sousse and Monastir,True
+sfax,2016-09-29,high,0,https://www.webdo.tn/fr/actualite/national/pluies-torrentielles-a-sfax-routes-inondees-bloquees/162289/,roads flooded and blocked in Sfax,True
+nabeul,2018-09-22,high,1,https://reliefweb.int/disaster/ff-2018-000158-tun,Cap Bon flash flood (Copernicus EMSR319; used to fit the threshold),True
+hammamet,2018-09-22,high,1,https://afrique.le360.ma/tunisie/societe/2018/09/23/23084-tunisie-des-pluies-torrentielles-sement-le-chaos-23084/,roads closed at Hammamet and Mrezga (EMSR319; used to fit the threshold),True
+beni_khalled,2018-09-22,high,1,https://www.webmanagercenter.com/2026/01/23/560445/1969-2026-un-demi-siecle-dinondations-extremes-en-tunisie/,297 mm in six hours at Beni Khalled (EMSR319; used to fit the threshold),False
+nabeul,2018-10-17,high,0,https://www.webdo.tn/fr/actualite/national/du-sud-au-nord-la-tunisie-inondee/153122/,72 to 195 mm in Nabeul governorate; floods across the country,True
+zaghouan,2018-10-17,medium,0,https://jordantimes.com/node/312576,person missing in Zaghouan during the floods,True
+ariana,2019-09-10,high,0,https://kapitalis.com/tunisie/2019/09/11/inondations-a-lariana-la-gp8-rouverte-a-la-circulation-et-les-interventions-se-poursuivent/embed/,81 mm at Ariana; 400 homes flooded; roads cut,True
+tunis,2019-09-10,medium,0,https://www.webdo.tn/fr/?p=148345,Ariana hardest hit; Tunis also affected,True
+ariana,2019-10-28,high,0,https://www.seneweb.com/fr/news/Afrique/tunisie-des-pluies-torrentielles-paralysent-tunis_n_298887.html,Ariana and La Soukra declared disaster areas; light metro stopped,True
+tunis,2019-10-28,high,0,https://afrique.le360.ma/tunisie/societe/2019/10/29/28366-videos-tunisie-des-pluies-torrentielles-transforment-certains-quartiers-de-tunis-en-piscine-28366/,50 to 95 mm on Grand Tunis; roads blocked,True
+moknine,2020-09-05,medium,0,https://kapitalis.com/anbaa-tounes/2020/09/05/أمطار-طوفانية-بالمنستير-النيابة-العم/,girl drowned in an open drain at Beni Hassen during torrential rain,True
+tunis,2020-09-10,high,0,https://kapitalis.com/tunisie/?p=315868,Grand Tunis roads flooded; taxi swept away at Borj Chakir; metro tunnel Bab Alioua flooded,True
+ariana,2020-09-10,high,0,https://kapitalis.com/tunisie/?p=315868,roads shops and homes flooded in Tunis Ariana and Manouba,True
+sousse,2024-09-23,high,0,https://kapitalis.com/tunisie/2024/09/23/sousse-suspendus-a-cause-des-fortes-pluies-les-cours-reprendront-mardi/,water rising at Khezama Hammam Sousse Sahloul; 102 mm at Bchechma,True
+sfax,2024-10-22,medium,0,https://www.leconomistemaghrebin.com/2024/10/22/regions-intemperies-suspension-des-cours-a-sfax-sousse-mahdia-et-monastir/,classes suspended; roads reopened after rainwater was drained,True
+tunis,2003-09-16,medium,0,https://www.webdo.tn/fr/actualite/national/les-inondations-qui-ont-marque-lhistoire-de-la-tunisie/153093,torrential rain on Grand Tunis Zaghouan and Nabeul; 4 dead,False
+ariana,2003-09-16,medium,0,https://www.webdo.tn/fr/actualite/national/les-inondations-qui-ont-marque-lhistoire-de-la-tunisie/153093,Grand Tunis (governorate-level report),False
+ben_arous,2003-09-16,medium,0,https://www.webdo.tn/fr/actualite/national/les-inondations-qui-ont-marque-lhistoire-de-la-tunisie/153093,Grand Tunis (governorate-level report),False
+zaghouan,2003-09-16,medium,0,https://www.webdo.tn/fr/actualite/national/les-inondations-qui-ont-marque-lhistoire-de-la-tunisie/153093,governorate-level report,False
+nabeul,2003-09-16,medium,0,https://www.webdo.tn/fr/actualite/national/les-inondations-qui-ont-marque-lhistoire-de-la-tunisie/153093,governorate-level report,False
+redeyef,2009-09-23,high,0,https://globalvoices.org/2009/09/26/tunisia-severe-flooding-kills-15/,150 mm in the night; oued Dakhla flood; 17 dead,False

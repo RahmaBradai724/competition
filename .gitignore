@@ -9,3 +9,6 @@ data/inventory_nyc.csv.gz
 
 __pycache__/
 *.pyc
+
+# NOAA ISD downloads, rebuilt by flood_risk/real/synop_tn.py
+data/raw/synop_tn/

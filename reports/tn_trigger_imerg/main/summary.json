@@ -1,0 +1,13 @@
+{
+  "zones": 14,
+  "zone_years_recorded": 154.00958247775498,
+  "duplicate_rows_dropped": 0,
+  "values_outside_service": 0,
+  "flood_dates": 23,
+  "flood_dates_unmatched": 6,
+  "flood_spells": 17,
+  "flood_spells_incomplete": 0,
+  "flood_spells_ambiguous": 0,
+  "spells_without_flood": 3369,
+  "spells_without_flood_incomplete": 0
+}

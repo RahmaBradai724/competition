@@ -1,0 +1,15 @@
+zone,lon,lat,governorate,note
+tunis,10.181,36.806,Tunis,
+ariana,10.193,36.862,Ariana,
+ben_arous,10.231,36.754,Ben Arous,
+zaghouan,10.143,36.402,Zaghouan,
+bizerte,9.873,37.274,Bizerte,
+nabeul,10.737,36.456,Nabeul,EMSR319 area (calibration event 2018-09-22)
+hammamet,10.617,36.400,Nabeul,EMSR319 area (calibration event 2018-09-22)
+beni_khalled,10.593,36.648,Nabeul,EMSR319 area (calibration event 2018-09-22)
+sousse,10.637,35.826,Sousse,
+monastir,10.826,35.764,Monastir,
+moknine,10.900,35.630,Monastir,
+mahdia,11.062,35.505,Mahdia,
+kairouan,10.096,35.678,Kairouan,
+sfax,10.760,34.740,Sfax,

@@ -52,7 +52,7 @@ def half_hour(session: Path, t, x0, x1, y0, y1, cache) -> np.ndarray:
             # curl (Windows TLS stack) is used because the Earthdata servers reset Python's OpenSSL handshake here.
             r = subprocess.run(["curl", "-s", "-g", "-L", "-m", "120", "--netrc-file", str(NETRC),
                                 "-c", str(session), "-b", str(session), "-o", str(f), url], capture_output=True)
-            if r.returncode == 0 and f.exists() and "precipitation[" in f.read_text(errors="ignore"):
+            if r.returncode == 0 and f.exists() and f.read_text(errors="ignore").lstrip().startswith("Dataset:"):   # error pages also echo the URL
                 break
             f.unlink(missing_ok=True)
             time.sleep(min(2 * (attempt + 1), 20))

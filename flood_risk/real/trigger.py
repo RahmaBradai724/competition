@@ -43,7 +43,7 @@ def daily_grid(day, x0, x1, y0, y1, cookies: Path, cache: Path) -> np.ndarray:
             url = DAILY.format(host=HOSTS[attempt % len(HOSTS)], t=day, x0=x0, x1=x1, y0=y0, y1=y1)
             r = subprocess.run(["curl", "-s", "-g", "-L", "-m", "120", "--netrc-file", str(NETRC),
                                 "-c", str(cookies), "-b", str(cookies), "-o", str(f), url], capture_output=True)
-            if r.returncode == 0 and f.exists() and "precipitation[" in f.read_text(errors="ignore"):
+            if r.returncode == 0 and f.exists() and f.read_text(errors="ignore").lstrip().startswith("Dataset:"):   # error pages also echo the URL
                 break
             f.unlink(missing_ok=True)
             time.sleep(min(2 * (attempt + 1), 20))

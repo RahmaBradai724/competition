@@ -1,0 +1,11 @@
+# Earthdata session cookies: never commit
+*cookies*.txt
+
+# Download caches, rebuilt by the scripts
+data/raw/imerg_tn/
+
+# Too large for GitHub (> 100 MB)
+data/inventory_nyc.csv.gz
+
+__pycache__/
+*.pyc

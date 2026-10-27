@@ -101,9 +101,10 @@ forecast part comes from ECMWF or AROME. Use a 0.1° grid (≈ 10 km) or finer.
 
 The threshold was calibrated on **calendar days** (00–24 UTC) of IMERG Final. The centred window used in
 operation is always at least as large: ×1.03 in median and up to ×1.7 when a storm straddles midnight
-(`reports/med_trigger/window_check.csv`). The trigger therefore fires earlier and catches 27 of the 28 flood zones
-instead of 25. It will also fire more often without a flood, and the daily data cannot measure how much more.
-Check this during the Tunisian validation.
+(`reports/med_trigger/window_check.csv`). At the fixed 44 mm, the trigger therefore fires earlier and catches
+27 of the 28 flood zones instead of 24. These are the 28 zones the threshold was studied on, not an independent
+validation. It will also fire more often without a flood, and the daily data cannot measure how much more.
+Check this during the Tunisian validation (`python -m flood_risk.real.validate_trigger`).
 
 ### 2.5 Columns used only for the confidence rules (section 7.3 of the specification)
 

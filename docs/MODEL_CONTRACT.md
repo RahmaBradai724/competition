@@ -211,6 +211,11 @@ seen during training. Alerts are set to High for 2 % of each zone.
 | 6 countries, one left out at a time | 0.76 | 0.27 | 17 % | 33 % | 67 % |
 | Nabeul 2018 (Tunisia left out) | 0.79 | – | 33 % | – | – |
 
+Each fold trains, calibrates and sets its base rate on the other events only; no event or zone is on both
+sides. The hyperparameters (`models/med_imerg/hgb_params.json`) and the choice of terrain-only features were
+selected with cross-validation on the same 13 events, without a nested cross-validation, so these scores may be
+slightly optimistic.
+
 Recall is limited by the budget. When a flood covers more than 2 % of a zone, even a perfect
 ranking cannot alert on all of it. Raising the budget to 10 % brings recall to about 35 %.
 The model fails on urban torrent floods (Mandra 2017, Derna 2023).

@@ -11,7 +11,7 @@ It is a prototype. **It is not an operationally validated flood-warning system.*
 
 | Part | File | Status |
 |---|---|---|
-| Terrain model: ranks road segments inside a zone by flood susceptibility, from terrain only | `models/final/v2_terrain.joblib` | cross-validated offline: one flood left out at a time (13 Mediterranean floods), one country left out at a time (6 countries); not tested in operation |
+| Terrain model: ranks road segments inside a zone by flood susceptibility, from terrain only | `models/final/v2_terrain.joblib` | evaluated offline with leave-one-event-out cross-validation across 13 Mediterranean floods and leave-one-country-out across 6 countries; not tested in operational conditions |
 | Rain trigger: an alert when a zone's rain reaches **44 mm in a rolling 24 h window** | `models/final/trigger.json` | **provisional** |
 
 Alert levels are a budget per zone: the riskiest 10 % of a zone's roads are Moderate, 2 % High and 0.5 % Very

@@ -1,6 +1,6 @@
 {
   "zones": 13,
-  "zone_years_recorded": 128.26009582477755,
+  "zone_years_recorded": 128.23237508555783,
   "duplicate_rows_dropped": 0,
   "values_outside_service": 0,
   "flood_dates": 23,
@@ -8,6 +8,6 @@
   "flood_spells": 16,
   "flood_spells_incomplete": 4,
   "flood_spells_ambiguous": 0,
-  "spells_without_flood": 2140,
-  "spells_without_flood_incomplete": 231
+  "spells_without_flood": 2119,
+  "spells_without_flood_incomplete": 229
 }

@@ -1,0 +1,13 @@
+station,date,zones,in_calibration,rolling_24h_mm,caught,resolution_quality
+60715099999,2019-09-10,"ariana,tunis",0,33.000,False,insufficient
+60715099999,2019-10-28,"ariana,tunis",0,106.800,True,high
+60715099999,2020-09-10,"ariana,tunis",0,24.006,False,insufficient
+60728099999,2018-09-22,"hammamet,nabeul",1,206.001,True,high
+60728099999,2018-10-17,nabeul,0,55.800,True,high
+60729099999,2018-10-17,zaghouan,0,52.002,True,approximate
+60740099999,2016-09-23,sousse,0,38.997,False,insufficient
+60740099999,2016-09-29,sousse,0,72.804,True,insufficient
+60740099999,2020-09-05,moknine,0,62.199,True,high
+60740099999,2024-09-23,sousse,0,39.600,False,high
+60750099999,2016-09-29,sfax,0,14.598,False,approximate
+60750099999,2024-10-22,sfax,0,60.000,True,approximate

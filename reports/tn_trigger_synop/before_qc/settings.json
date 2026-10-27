@@ -1,0 +1,16 @@
+{
+  "wet_mmh": 0.2,
+  "gap_h": 24,
+  "min_spell_mm": 5.0,
+  "match_days": 1,
+  "max_missing_h": 6,
+  "time_label": "start",
+  "threshold_mm": 44.0,
+  "rain": "data/tn_trigger/synop_hourly.csv.gz",
+  "floods": "data/tn_trigger/floods.csv",
+  "stations": null,
+  "period": [
+    null,
+    null
+  ]
+}

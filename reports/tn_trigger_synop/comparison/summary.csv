@@ -1,0 +1,29 @@
+,before,after
+threshold_mm,44.0,44.0
+zone_dates_caught_independent,7/14,7/14
+zone_dates_recall_95ci,0.27-0.73,0.27-0.73
+zone_dates_high,not computed: no method column in the rain file,4/5
+zone_dates_approximate,not computed: no method column in the rain file,2/3
+zone_dates_insufficient,not computed: no method column in the rain file,1/6
+event_stations_caught_independent,6/11,6/11
+event_stations_recall_95ci,0.28-0.79,0.28-0.79
+event_stations_high,not computed: no method column in the rain file,3/4
+event_stations_approximate,not computed: no method column in the rain file,2/3
+event_stations_insufficient,not computed: no method column in the rain file,1/4
+zone_dates_unmatched,0,0
+false_zone_episodes,135,135
+false_station_episodes,74,74
+false_episode_groups,50,50
+spells,2156,2135
+false_station_episodes_flagged,24,25
+false_station_episodes_flagged_unreviewed,2,0
+false_station_episodes_not_flagged,not computed: 2 flagged episodes without a decision,49
+false_zone_episodes_not_flagged,not computed: 2 flagged episodes without a decision,86
+false_station_episodes_confirmed_false_alarm,not computed: 2 flagged episodes without a decision,0
+false_zone_episodes_confirmed_false_alarm,not computed: 2 flagged episodes without a decision,0
+false_station_episodes_unresolved,not computed: 2 flagged episodes without a decision,6
+false_zone_episodes_unresolved,not computed: 2 flagged episodes without a decision,12
+false_station_episodes_possible_unlisted_flood,not computed: 2 flagged episodes without a decision,12
+false_zone_episodes_possible_unlisted_flood,not computed: 2 flagged episodes without a decision,20
+false_station_episodes_rainfall_data_unreliable,not computed: 2 flagged episodes without a decision,7
+false_zone_episodes_rainfall_data_unreliable,not computed: 2 flagged episodes without a decision,11
